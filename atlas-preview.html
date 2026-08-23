@@ -13,6 +13,7 @@
   --purple:#bc8cff; --orange:#db6d28;
 }
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);height:100vh;display:flex;
   flex-direction:column;overflow:hidden;
   font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
@@ -1136,29 +1137,29 @@ body{height:100vh!important;min-height:640px;overflow:hidden!important;font-fami
 .atlas-group-title{fill:#88a9be;font-size:13px;font-weight:720;letter-spacing:.09em;text-transform:uppercase}
 .atlas-group-sub{fill:#557186;font-size:10.5px}
 .node{cursor:pointer;outline:none;transition:opacity .16s ease;filter:none!important}
-.node foreignObject{overflow:visible;pointer-events:none}
-.atlas-node-card{height:100%;width:100%;border:1px solid var(--node-stroke,#31495d);border-top:3px solid var(--node-accent,#64859e);border-radius:14px;background:linear-gradient(145deg,var(--node-fill,#10202e),rgba(9,20,31,.98));box-shadow:0 9px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025);color:var(--atlas-text);padding:11px 13px 10px;display:flex;flex-direction:column;justify-content:center;position:relative;transition:border-color .14s,box-shadow .14s,transform .14s,opacity .14s;overflow:hidden}
-.atlas-node-card:before{content:"";position:absolute;inset:-35% auto auto -14%;width:55%;height:110%;background:radial-gradient(circle,rgba(255,255,255,.045),transparent 66%);pointer-events:none}
-.node:hover .atlas-node-card{border-color:var(--atlas-cyan);box-shadow:0 13px 34px rgba(0,0,0,.32),0 0 0 2px rgba(73,199,232,.10);transform:translateY(-2px)}
-.node.sel .atlas-node-card{border-color:var(--atlas-cyan);box-shadow:0 15px 40px rgba(0,0,0,.36),0 0 0 3px rgba(73,199,232,.16),0 0 30px rgba(73,199,232,.10)}
-.node:focus-visible .atlas-node-card{outline:3px solid rgba(73,199,232,.40);outline-offset:3px}
+.atlas-node-card-svg{fill:var(--node-fill,#10202e)!important;stroke:var(--node-stroke,#31495d)!important;stroke-width:1.35!important;vector-effect:non-scaling-stroke;transition:stroke .14s,opacity .14s}
+.atlas-node-accent{stroke:var(--node-accent,#64859e);stroke-width:3;stroke-linecap:round;vector-effect:non-scaling-stroke;pointer-events:none}
+.node:hover .atlas-node-card-svg{stroke:var(--atlas-cyan)!important;stroke-width:2!important}
+.node.sel .atlas-node-card-svg{stroke:var(--atlas-cyan)!important;stroke-width:2.7!important}
+.node:focus-visible .atlas-node-card-svg{stroke:var(--atlas-cyan)!important;stroke-width:3!important}
+.atlas-svg-kind-icon{fill:#0b1c27!important;stroke:var(--node-accent,#91a9bb)!important;stroke-width:1!important;vector-effect:non-scaling-stroke;pointer-events:none}
+.node .atlas-svg-kind-symbol{fill:var(--node-accent,#91a9bb);font-size:9px;font-weight:850;text-anchor:middle;pointer-events:none}
+.node .atlas-svg-kind{fill:var(--node-accent,#91a9bb);font-size:9px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;pointer-events:none}
+.node .atlas-svg-title{fill:var(--atlas-text);font-size:14px;font-weight:750;letter-spacing:-.01em;pointer-events:none}
+.node .atlas-svg-sub{fill:#8299aa;font-size:10.5px;font-weight:500;pointer-events:none}
+.node .atlas-svg-flag{fill:#6f899c;font-size:8.5px;font-weight:650;pointer-events:none}
+.atlas-node-drill{cursor:pointer;pointer-events:auto}
+.atlas-node-drill circle{fill:#0d2635!important;stroke:var(--atlas-cyan)!important;stroke-width:1.25!important;vector-effect:non-scaling-stroke}
+.node .atlas-node-drill text{fill:var(--atlas-cyan);font-size:18px;font-weight:850;text-anchor:middle;pointer-events:none}
+.atlas-node-drill:hover circle,.atlas-node-drill:focus-visible circle{fill:#12384b!important;stroke:#8eeaff!important;stroke-width:2!important}
 .node.dim{opacity:.23}
-.atlas-node-top{display:flex;align-items:center;gap:7px;margin-bottom:5px;min-height:16px}
-.atlas-node-kind{font-size:8px;line-height:1;text-transform:uppercase;letter-spacing:.13em;font-weight:850;color:var(--node-accent,#91a9bb);white-space:nowrap}
-.atlas-node-kind-icon{width:16px;height:16px;border-radius:5px;display:inline-grid;place-items:center;color:var(--node-accent,#91a9bb);background:color-mix(in srgb,var(--node-accent,#91a9bb) 11%,transparent);font-size:8px}
-.atlas-node-drill{margin-left:auto;color:var(--atlas-cyan);font-size:10px;font-weight:750;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.atlas-node-title{font-size:14px;line-height:1.22;font-weight:750;letter-spacing:-.01em;color:var(--atlas-text);position:relative;z-index:1}
-.atlas-node-sub{font-size:10.5px;line-height:1.34;color:#8299aa;margin-top:5px;position:relative;z-index:1}
-.atlas-node-flags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
-.atlas-node-flag{font-size:8px;color:#7894a8;border:1px solid rgba(75,105,128,.45);border-radius:999px;padding:2px 6px;background:rgba(6,14,22,.30);white-space:nowrap}
-.atlas-node-flag.loop{color:#d99056;border-color:rgba(245,146,74,.28)}
-.node.kind-start .atlas-node-card,.node.kind-end .atlas-node-card{--node-accent:var(--atlas-green);--node-stroke:#285d45;--node-fill:#0b281c}
-.node.kind-halt .atlas-node-card{--node-accent:var(--atlas-red);--node-stroke:#6b3538;--node-fill:#2b151c}
-.node.kind-decision .atlas-node-card{--node-accent:var(--atlas-amber);--node-stroke:#6b5227;--node-fill:#2a2112}
-.node.kind-prompt .atlas-node-card{--node-accent:var(--atlas-purple);--node-stroke:#5a4777;--node-fill:#221933}
-.node.kind-data .atlas-node-card{--node-accent:var(--atlas-blue);--node-stroke:#31577b;--node-fill:#0d2133}
-.node.kind-gate .atlas-node-card{--node-accent:var(--atlas-pink);--node-stroke:#6a3b61;--node-fill:#29172a}
-.node.kind-process .atlas-node-card,.node.kind-action .atlas-node-card{--node-accent:#86a1b4;--node-stroke:#30485b;--node-fill:#101e2b}
+.node.kind-start,.node.kind-end{--node-accent:var(--atlas-green);--node-stroke:#285d45;--node-fill:#0b281c}
+.node.kind-halt{--node-accent:var(--atlas-red);--node-stroke:#6b3538;--node-fill:#2b151c}
+.node.kind-decision{--node-accent:var(--atlas-amber);--node-stroke:#6b5227;--node-fill:#2a2112}
+.node.kind-prompt{--node-accent:var(--atlas-purple);--node-stroke:#5a4777;--node-fill:#221933}
+.node.kind-data{--node-accent:var(--atlas-blue);--node-stroke:#31577b;--node-fill:#0d2133}
+.node.kind-gate{--node-accent:var(--atlas-pink);--node-stroke:#6a3b61;--node-fill:#29172a}
+.node.kind-process,.node.kind-action{--node-accent:#86a1b4;--node-stroke:#30485b;--node-fill:#101e2b}
 .edge{fill:none;stroke:#60788a;stroke-width:1.45;marker-end:url(#atlas-arr);opacity:.67;transition:opacity .13s,stroke .13s,stroke-width .13s;vector-effect:non-scaling-stroke}
 .edge.loop{stroke:var(--atlas-orange);stroke-dasharray:6 6;opacity:.55}
 .edge.dim{opacity:.055}
@@ -1251,10 +1252,7 @@ body{height:100vh!important;min-height:640px;overflow:hidden!important;font-fami
 
 /* Deep atlas pass — clickable drill doors and audit-grade node narratives */
 .atlas-layout-group,.atlas-layout-group *,.edge,.atlas-edge-label-wrap{pointer-events:none!important}
-.node,.node foreignObject,.atlas-node-card{pointer-events:auto!important}
-.node.drillable .atlas-node-card{box-shadow:0 9px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025),0 0 0 1px rgba(73,199,232,.06)}
-.atlas-node-drill{margin-left:auto!important;width:23px;height:23px;min-width:23px;padding:0;border:1px solid rgba(73,199,232,.55);border-radius:999px;background:rgba(73,199,232,.11);color:var(--atlas-cyan);font:850 16px/19px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;cursor:pointer;position:relative;z-index:4;box-shadow:0 0 0 3px rgba(73,199,232,.05);transition:transform .14s,background .14s,border-color .14s,box-shadow .14s}
-.atlas-node-drill:hover,.atlas-node-drill:focus-visible{transform:scale(1.12);background:rgba(73,199,232,.22);border-color:var(--atlas-cyan);box-shadow:0 0 18px rgba(73,199,232,.25);outline:none}
+.node,.atlas-node-card-svg,.atlas-node-drill{pointer-events:auto!important}
 .atlas-help-plus{display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid rgba(73,199,232,.45);border-radius:999px;color:var(--atlas-cyan);font-weight:900;line-height:1}
 .atlas-back[hidden]{display:none!important}
 .atlas-back{font-size:15px!important;padding:0!important;min-width:34px!important}
@@ -2339,9 +2337,35 @@ Object.assign(ENG, {
   }
 
   function nodeHeight(n){
-    const titleLines=Math.max(1,Math.min(3,Math.ceil(safeText(n.label).length/29)));
-    const face=cardSummary(n); const subLines=face?Math.max(1,Math.min(3,Math.ceil(safeText(face).length/43))):0;
-    return Math.max(98,58+titleLines*18+(subLines?8+subLines*15:0)+(n.drill?7:0));
+    const titleLines=Math.max(1,wrapSvgText(n.label,31,3).length);
+    const face=cardSummary(n); const subLines=face?wrapSvgText(face,44,3).length:0;
+    return Math.max(98,58+titleLines*17+(subLines?7+subLines*14:0));
+  }
+
+  // Keep every node inside SVG. WebKit on iPad can scale and position HTML
+  // inside foreignObject independently from the surrounding SVG, leaving
+  // giant text in one corner while the card itself disappears. Native SVG
+  // text is stable through the same viewBox, pan, and zoom transforms.
+  function wrapSvgText(value,maxChars,maxLines){
+    if(maxLines<1)return [];
+    const source=safeText(value).replace(/\s+/g," ").trim();
+    if(!source)return [];
+    const words=source.split(" "),lines=[];let index=0;
+    while(index<words.length&&lines.length<maxLines){
+      let line=words[index++];
+      while(index<words.length&&(line+" "+words[index]).length<=maxChars)line+=" "+words[index++];
+      if(line.length>maxChars)line=line.slice(0,maxChars-1).trimEnd()+"…";
+      lines.push(line);
+    }
+    if(index<words.length&&lines.length){
+      const last=lines.length-1;
+      lines[last]=lines[last].replace(/…$/," ").trimEnd().slice(0,maxChars-1).trimEnd()+"…";
+    }
+    return lines;
+  }
+
+  function svgTspans(lines,x,y,lineHeight){
+    return lines.map((line,i)=>`<tspan x="${x}" y="${y+i*lineHeight}">${htmlEsc(line)}</tspan>`).join("");
   }
 
   function genericLayout(d){
@@ -2454,12 +2478,26 @@ Object.assign(ENG, {
       const dim=selected&&!related.has(n.id);const custom=n.color?`--node-fill:${n.color.f};--node-stroke:${n.color.s};--node-accent:${n.color.s};`:"";
       const flags=[]; if((out[n.id]||[]).length>ATLAS_HUB_THRESHOLD)flags.push(`↗ ${(out[n.id]||[]).length} routes`);if((inc[n.id]||[]).length>ATLAS_HUB_THRESHOLD)flags.push(`↙ ${(inc[n.id]||[]).length} arrivals`);if(loops[n.id])flags.push(`↩ ${loops[n.id]} feedback`);
       const face=cardSummary(n,did);
-      return `<g class="node kind-${kind}${n.drill?' drillable':''}${selected===n.id?' sel':''}${dim?' dim':''}" transform="translate(${P.x},${P.y})" data-id="${htmlEsc(n.id)}" tabindex="0" role="button" aria-label="${htmlEsc(n.label)}${n.drill?' — has an internal diagram':''}">
-        <foreignObject x="${-P.w/2}" y="${-P.h/2}" width="${P.w}" height="${P.h}"><div xmlns="http://www.w3.org/1999/xhtml" class="atlas-node-card" style="${custom}">
-          <div class="atlas-node-top"><span class="atlas-node-kind-icon">${meta[1]}</span><span class="atlas-node-kind">${meta[0]}</span>${n.drill?'<button type="button" class="atlas-node-drill" data-drill-target="'+htmlEsc(n.drill)+'" aria-label="Open internals for '+htmlEsc(n.label)+'" title="Open internals">+</button>':''}</div>
-          <div class="atlas-node-title">${htmlEsc(n.label)}</div>${face?`<div class="atlas-node-sub">${htmlEsc(face)}</div>`:""}
-          ${flags.length?`<div class="atlas-node-flags">${flags.map((x,i)=>`<span class="atlas-node-flag${x.includes('feedback')?' loop':''}">${htmlEsc(x)}</span>`).join("")}</div>`:""}
-        </div></foreignObject></g>`;
+      const left=-P.w/2,top=-P.h/2,pad=14;
+      const titleLines=wrapSvgText(n.label,31,3);const titleY=top+48;
+      const summaryY=titleY+titleLines.length*17+7;
+      const summaryRoom=top+P.h-12-summaryY;
+      const summaryLines=summaryRoom>=10?wrapSvgText(face,44,Math.min(3,Math.floor(summaryRoom/14)+1)):[];
+      const flagText=truncate(flags.join(" · "),48);const flagY=top+P.h-11;
+      const summaryEnd=summaryLines.length?summaryY+(summaryLines.length-1)*14:titleY+(titleLines.length-1)*17;
+      const showFlag=flagText&&summaryEnd<=flagY-16;
+      return `<g class="node kind-${kind}${n.drill?' drillable':''}${selected===n.id?' sel':''}${dim?' dim':''}" style="${custom}" transform="translate(${P.x},${P.y})" data-id="${htmlEsc(n.id)}" tabindex="0" role="button" aria-label="${htmlEsc(n.label)}${n.drill?' — has an internal diagram':''}">
+        <title>${htmlEsc(n.label)}${face?' — '+htmlEsc(face):''}</title>
+        <rect class="atlas-node-card-svg" x="${left}" y="${top}" width="${P.w}" height="${P.h}" rx="14"/>
+        <line class="atlas-node-accent" x1="${left+14}" y1="${top+2}" x2="${P.w/2-14}" y2="${top+2}"/>
+        <rect class="atlas-svg-kind-icon" x="${left+pad}" y="${top+12}" width="16" height="16" rx="5"/>
+        <text class="atlas-svg-kind-symbol" x="${left+pad+8}" y="${top+23}">${htmlEsc(meta[1])}</text>
+        <text class="atlas-svg-kind" x="${left+pad+24}" y="${top+23}">${htmlEsc(meta[0])}</text>
+        ${n.drill?`<g class="atlas-node-drill" data-drill-target="${htmlEsc(n.drill)}" transform="translate(${P.w/2-20},${top+20})" tabindex="0" role="button" aria-label="Open internals for ${htmlEsc(n.label)}"><circle r="10"/><text y="5.5">+</text></g>`:""}
+        <text class="atlas-svg-title">${svgTspans(titleLines,left+pad,titleY,17)}</text>
+        ${summaryLines.length?`<text class="atlas-svg-sub">${svgTspans(summaryLines,left+pad,summaryY,14)}</text>`:""}
+        ${showFlag?`<text class="atlas-svg-flag" x="${left+pad}" y="${flagY}">${htmlEsc(flagText)}</text>`:""}
+      </g>`;
     }).join("");
     world.innerHTML=groupSvg+edges.join("")+labels.join("")+nodes;
     bindNodes();
@@ -2487,6 +2525,7 @@ Object.assign(ENG, {
         plus.addEventListener("click",openInternals);
         plus.addEventListener("dblclick",openInternals);
         plus.addEventListener("touchend",openInternals,{passive:false});
+        plus.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" ")openInternals(e);});
       }
       g.addEventListener("click",e=>{
         if(e.target.closest&&e.target.closest(".atlas-node-drill"))return;
