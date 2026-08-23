@@ -43,6 +43,7 @@ class Collector(HTMLParser):
     def __init__(self, path: Path) -> None:
         super().__init__(convert_charrefs=True)
         self.document = Document(path=path)
+        self._style_depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
@@ -66,10 +67,25 @@ class Collector(HTMLParser):
             self.document.forms.append(values)
         if tag == "input" and (values.get("type") or "").lower() == "email":
             self.document.email_inputs.append(values)
+        if tag == "style":
+            self._style_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "style" and self._style_depth:
+            self._style_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self._style_depth:
+            self.document.references.extend(extract_css_urls(data))
 
 
 def extract_css_urls(text: str) -> list[str]:
-    return [match.group(2).strip() for match in CSS_URL.finditer(text) if match.group(2).strip()]
+    references = []
+    for match in CSS_URL.finditer(text):
+        reference = match.group(2).strip()
+        if reference and not reference.startswith("#"):
+            references.append(reference)
+    return references
 
 
 def parse_document(path: Path) -> tuple[Document, str]:
@@ -77,7 +93,6 @@ def parse_document(path: Path) -> tuple[Document, str]:
     parser = Collector(path)
     parser.feed(text)
     parser.close()
-    parser.document.references.extend(extract_css_urls(text))
     return parser.document, text
 
 
@@ -149,7 +164,7 @@ def validate(root: Path) -> list[str]:
         duplicates = sorted(name for name, count in Counter(document.ids).items() if count > 1)
         if duplicates:
             errors.append(f"duplicate id values in {relative}: {', '.join(duplicates)}")
-        if LOCAL_HOST.search(text):
+        if any(LOCAL_HOST.search(reference) for reference in document.references):
             errors.append(f"local-only URL found in {relative}")
 
     for path, document in list(documents.items()):
