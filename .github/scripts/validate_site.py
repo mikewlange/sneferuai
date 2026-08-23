@@ -35,8 +35,9 @@ class Document:
     path: Path
     ids: list[str] = field(default_factory=list)
     references: list[str] = field(default_factory=list)
+    links: list[dict[str, str | None]] = field(default_factory=list)
     forms: list[dict[str, str | None]] = field(default_factory=list)
-    email_inputs: list[dict[str, str | None]] = field(default_factory=list)
+    form_fields: list[dict[str, str | None]] = field(default_factory=list)
 
 
 class Collector(HTMLParser):
@@ -65,8 +66,10 @@ class Collector(HTMLParser):
 
         if tag == "form":
             self.document.forms.append(values)
-        if tag == "input" and (values.get("type") or "").lower() == "email":
-            self.document.email_inputs.append(values)
+        if tag == "a":
+            self.document.links.append(values)
+        if tag in {"input", "textarea", "select"} and values.get("name"):
+            self.document.form_fields.append(values)
         if tag == "style":
             self._style_depth += 1
 
@@ -196,6 +199,11 @@ def validate(root: Path) -> list[str]:
 
     index = documents.get((root / "index.html").resolve())
     if index is not None:
+        contact_links = [attrs for attrs in index.links if "data-contact-link" in attrs]
+        if not contact_links:
+            errors.append("index.html must contain an in-page contact link")
+        elif any(attrs.get("href") != "#contact" for attrs in contact_links):
+            errors.append("every contact link must point to #contact")
         if len(index.forms) != 1:
             errors.append(f"index.html must contain one contact form; found {len(index.forms)}")
         else:
@@ -204,8 +212,18 @@ def validate(root: Path) -> list[str]:
                 errors.append("contact form action is not the approved Formspree endpoint")
             if (form.get("method") or "").lower() != "post":
                 errors.append("contact form method must be POST")
-        if not any("required" in attrs and attrs.get("name") == "email" for attrs in index.email_inputs):
-            errors.append("contact form must require an email address")
+            if form.get("id") != "contact-form" or "data-onsite-submit" not in form:
+                errors.append("contact form must use the on-site submission flow")
+        if "contact-form-status" not in index.ids:
+            errors.append("contact form must include an on-site status message")
+        fields = {attrs.get("name"): attrs for attrs in index.form_fields}
+        for name, label in (("email", "email address"), ("name", "name"), ("comments", "comments")):
+            if name not in fields or "required" not in fields[name]:
+                errors.append(f"contact form must require {label}")
+        if "company_or_fund" not in fields:
+            errors.append("contact form must include company or fund")
+        elif "required" in fields["company_or_fund"]:
+            errors.append("company or fund must remain optional")
 
     return errors
 

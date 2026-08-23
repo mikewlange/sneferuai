@@ -511,6 +511,10 @@ table.land{width:100%;border-collapse:collapse;margin-top:34px;font-size:14px}
   text-transform:uppercase;cursor:pointer;transition:background .16s ease,color .16s ease,border-color .16s ease}
 .demo-submit:hover{background:var(--copper);color:var(--night)}
 .demo-submit:focus-visible{outline:1px solid var(--gold);outline-offset:5px}
+.demo-submit:disabled{cursor:wait;opacity:.62;background:transparent;color:var(--ink-2)}
+.demo-status{margin:18px 0 0;padding:14px 16px;border-left:2px solid var(--gold);background:rgba(205,157,74,.07);
+  color:var(--ink);font:400 15px/1.55 var(--serif)}
+.demo-status.is-error{border-left-color:var(--copper);background:rgba(194,109,70,.08)}
 .demo-note{margin:16px 0 0;font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--ink-3)}
 .demo-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;
   overflow:hidden!important}
@@ -610,7 +614,7 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
       <p class="lede">Autonomous work that ships with receipts.</p>
       <div class="hero-links">
         <a href="atlas-preview.html">Open the system atlas</a>
-        <a href="#founder">Contact me</a>
+        <a href="#contact" data-contact-link>Contact me</a>
       </div>
       <div class="standing">Founder-built. Local-first. Multi-model. Building new things right now.</div>
     </div>
@@ -630,8 +634,8 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
     <div class="hero-grid premise-grid">
       <div>
         <h2>Generation is easy. Finishing is not.</h2>
-        <p>AI can produce impressive pieces of work. But most systems still leave the human to
-        assemble, test, and finish them.</p>
+        <p>AI can produce impressive pieces of work. But most systems leave others to verify,
+        assemble, test, and finish.</p>
         <p>Sneferu casts models from different labs as authors, adversaries, critics, judges,
         scorers, implementers, designers, reviewers, and more, all working together toward a single
         artifact or project.</p>
@@ -1282,8 +1286,7 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
           <p>I am looking for a co-founder and an early investor. If that is you, I&rsquo;d love to hear from you.</p>
           <p>Sneferu is not available to the public yet.</p>
         </div>
-        <!-- Confirm access to this Formspree project and complete one delivery test before publication. -->
-        <form class="demo-form" action="https://formspree.io/f/xpqvqqra" method="POST">
+        <form id="contact-form" class="demo-form" action="https://formspree.io/f/xpqvqqra" method="POST" data-onsite-submit>
           <input type="hidden" name="_subject" value="Sneferu investor contact" />
           <div class="demo-honeypot" aria-hidden="true">
             <label for="contact-website">Leave this field empty</label>
@@ -1295,19 +1298,20 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
               <input id="contact-email" name="email" type="email" required autocomplete="email" />
             </div>
             <div class="demo-field">
-              <label for="contact-name">Name <span>Optional</span></label>
-              <input id="contact-name" name="name" autocomplete="name" />
+              <label for="contact-name">Name <span>Required</span></label>
+              <input id="contact-name" name="name" required autocomplete="name" />
             </div>
             <div class="demo-field">
               <label for="contact-company">Company or fund <span>Optional</span></label>
               <input id="contact-company" name="company_or_fund" autocomplete="organization" />
             </div>
             <div class="demo-field full">
-              <label for="contact-comments">Comments <span>Optional</span></label>
-              <textarea id="contact-comments" name="comments" rows="4"></textarea>
+              <label for="contact-comments">Comments <span>Required</span></label>
+              <textarea id="contact-comments" name="comments" rows="4" required></textarea>
             </div>
           </div>
           <button class="demo-submit" type="submit">Send message</button>
+          <p id="contact-form-status" class="demo-status" role="status" aria-live="polite" tabindex="-1" hidden></p>
           <p class="demo-note">One reply, from me. No mailing list.</p>
         </form>
       </div>
@@ -6461,6 +6465,53 @@ godot --headless --path &lt;project-root&gt; --script tools/attract_capture.gd -
   video.addEventListener('pause', sync);
   video.addEventListener('ended', sync);
   sync();
+})();
+
+/* Submit the contact form without sending visitors away from sneferu.ai. */
+(function(){
+  var form = document.getElementById('contact-form');
+  var status = document.getElementById('contact-form-status');
+  var submit = form && form.querySelector('.demo-submit');
+  if (!form || !status || !submit) return;
+
+  function showStatus(message, isError){
+    status.textContent = message;
+    status.classList.toggle('is-error', !!isError);
+    status.hidden = false;
+    try { status.focus({preventScroll:true}); }
+    catch (err) { status.focus(); }
+  }
+
+  form.addEventListener('submit', function(event){
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    status.hidden = true;
+    status.textContent = '';
+    status.classList.remove('is-error');
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    form.setAttribute('aria-busy', 'true');
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: {'Accept':'application/json'}
+    }).then(function(response){
+      if (!response.ok) throw new Error(response.status === 429 ? 'rate-limit' : 'submit-failed');
+      form.reset();
+      showStatus('Thanks. Your message was sent.', false);
+    }).catch(function(error){
+      var message = error && error.message === 'rate-limit'
+        ? 'Please wait a moment, then try again.'
+        : 'Your message could not be sent. Please try again.';
+      showStatus(message, true);
+    }).then(function(){
+      submit.disabled = false;
+      submit.textContent = 'Send message';
+      form.removeAttribute('aria-busy');
+    });
+  });
 })();
 
 /* the code browser: files are embedded, nothing is fetched */
