@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import re
 from collections import Counter
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
-from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from pathlib import Path, PurePosixPath
+from urllib.parse import parse_qs, unquote, urlsplit
 
 
 ENTRY_PAGES = ("index.html", "atlas-preview.html")
@@ -23,6 +25,8 @@ FORBIDDEN_PATHS = (
 )
 FORM_ACTION = "https://formspree.io/f/xpqvqqra"
 MAX_FILE_BYTES = 100 * 1024 * 1024
+RESEARCH_SCHEMA = "sneferu.research-pages-deployment/v1"
+PUBLIC_HOST = "sneferu.ai"
 CSS_URL = re.compile(r"url\(\s*(['\"]?)(.*?)\1\s*\)", re.IGNORECASE)
 LOCAL_HOST = re.compile(
     r"(?:file://|https?://(?:localhost|127\.0\.0\.1|[^/'\"\s]+\.local)(?::\d+)?)",
@@ -106,7 +110,8 @@ def local_target(root: Path, document: Path, reference: str) -> tuple[Path | Non
 
     parsed = urlsplit(reference)
     if parsed.scheme or parsed.netloc or reference.startswith("//"):
-        return None, ""
+        if parsed.scheme not in {"", "https"} or parsed.hostname != PUBLIC_HOST:
+            return None, ""
 
     fragment = unquote(parsed.fragment)
     raw_path = unquote(parsed.path)
@@ -129,6 +134,133 @@ def local_target(root: Path, document: Path, reference: str) -> tuple[Path | Non
     return target, fragment
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def safe_manifest_path(value: object) -> PurePosixPath | None:
+    if not isinstance(value, str) or not value or "\\" in value:
+        return None
+    path = PurePosixPath(value)
+    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
+        return None
+    return path
+
+
+def validate_research_deployments(root: Path, errors: list[str]) -> dict[str, str]:
+    """Verify every frozen research deployment and return its cache token."""
+
+    research_root = root / "research"
+    tokens: dict[str, str] = {}
+    if not research_root.is_dir():
+        return tokens
+
+    manifests = sorted(research_root.glob("*/deployment-manifest.json"))
+    if not manifests:
+        errors.append("research must contain at least one managed expedition deployment")
+        return tokens
+
+    for manifest_path in manifests:
+        deployment = manifest_path.parent
+        slug = deployment.name
+        label = manifest_path.relative_to(root)
+        try:
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            errors.append(f"cannot read research deployment manifest {label}: {exc}")
+            continue
+
+        if not isinstance(payload, dict):
+            errors.append(f"research deployment manifest must be an object: {label}")
+            continue
+        if payload.get("schema") != RESEARCH_SCHEMA:
+            errors.append(f"unsupported research deployment schema in {label}")
+        if payload.get("route") != f"/research/{slug}/":
+            errors.append(f"research deployment route does not match its directory: {label}")
+
+        rows = payload.get("runtime_files")
+        if not isinstance(rows, list) or not rows:
+            errors.append(f"research deployment has no runtime file inventory: {label}")
+            continue
+
+        expected: set[PurePosixPath] = set()
+        total_bytes = 0
+        index_sha = ""
+        for row in rows:
+            if not isinstance(row, dict):
+                errors.append(f"invalid runtime file row in {label}")
+                continue
+            relative = safe_manifest_path(row.get("path"))
+            if relative is None:
+                errors.append(f"unsafe runtime file path in {label}: {row.get('path')!r}")
+                continue
+            if relative in expected:
+                errors.append(f"duplicate runtime file in {label}: {relative}")
+                continue
+            expected.add(relative)
+
+            target = deployment.joinpath(*relative.parts)
+            if not target.is_file() or target.is_symlink():
+                errors.append(f"missing research runtime file: {target.relative_to(root)}")
+                continue
+
+            expected_size = row.get("size")
+            actual_size = target.stat().st_size
+            if not isinstance(expected_size, int) or expected_size < 0:
+                errors.append(f"invalid runtime size in {label}: {relative}")
+            elif actual_size != expected_size:
+                errors.append(
+                    f"research runtime size mismatch: {target.relative_to(root)} "
+                    f"(expected {expected_size}, found {actual_size})"
+                )
+            total_bytes += actual_size
+
+            expected_sha = row.get("sha256")
+            if not isinstance(expected_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_sha):
+                errors.append(f"invalid runtime hash in {label}: {relative}")
+                continue
+            actual_sha = sha256_file(target)
+            if actual_sha != expected_sha:
+                errors.append(f"research runtime hash mismatch: {target.relative_to(root)}")
+            if relative == PurePosixPath("index.html"):
+                index_sha = expected_sha
+
+        actual = {
+            PurePosixPath(path.relative_to(deployment).as_posix())
+            for path in deployment.rglob("*")
+            if path.is_file() and path != manifest_path
+        }
+        missing = sorted(expected - actual, key=str)
+        extra = sorted(actual - expected, key=str)
+        for relative in missing:
+            errors.append(f"research manifest member is absent: research/{slug}/{relative}")
+        for relative in extra:
+            errors.append(f"unrecorded research runtime file: research/{slug}/{relative}")
+
+        if payload.get("runtime_bytes") != total_bytes:
+            errors.append(f"research runtime byte total mismatch in {label}")
+        if not index_sha:
+            errors.append(f"research deployment does not inventory index.html: {label}")
+        else:
+            tokens[slug] = index_sha[:16]
+
+    return tokens
+
+
+def research_slug(reference: str) -> str | None:
+    parsed = urlsplit(reference.strip())
+    if (parsed.scheme or parsed.netloc) and parsed.hostname != PUBLIC_HOST:
+        return None
+    parts = PurePosixPath(unquote(parsed.path).lstrip("/")).parts
+    if len(parts) >= 2 and parts[0] == "research":
+        return parts[1]
+    return None
+
+
 def validate(root: Path) -> list[str]:
     errors: list[str] = []
     root = root.resolve()
@@ -149,6 +281,8 @@ def validate(root: Path) -> list[str]:
             errors.append(f"symbolic links are not allowed in the Pages artifact: {path.relative_to(root)}")
         elif path.is_file() and path.stat().st_size >= MAX_FILE_BYTES:
             errors.append(f"file is too large for GitHub Pages: {path.relative_to(root)}")
+
+    research_tokens = validate_research_deployments(root, errors)
 
     documents: dict[Path, Document] = {}
     texts: dict[Path, str] = {}
@@ -179,10 +313,19 @@ def validate(root: Path) -> list[str]:
                 continue
             if target is None:
                 continue
+            slug = research_slug(reference)
+            if slug in research_tokens:
+                versions = parse_qs(urlsplit(reference).query).get("v", [])
+                if versions != [research_tokens[slug]]:
+                    errors.append(
+                        f"research reference in {path.relative_to(root)} must use "
+                        f"?v={research_tokens[slug]}: {reference}"
+                    )
             if not target.exists() or not target.is_file():
                 errors.append(f"broken local reference in {path.relative_to(root)}: {reference}")
                 continue
-            if fragment and target.suffix.lower() in {".html", ".htm"}:
+            is_application_state = slug in research_tokens and fragment.startswith("static-view=")
+            if fragment and not is_application_state and target.suffix.lower() in {".html", ".htm"}:
                 target_document = documents.get(target)
                 if target_document is None:
                     try:
@@ -244,7 +387,10 @@ def main() -> int:
     files = [path for path in root.rglob("*") if path.is_file()]
     total_bytes = sum(path.stat().st_size for path in files)
     print(f"Site validation passed: {len(files)} files, {total_bytes / 1024 / 1024:.1f} MB")
-    print("Checked: local links, anchors, unique IDs, CNAME, contact form, file limits, and private exclusions")
+    print(
+        "Checked: local links, anchors, unique IDs, CNAME, contact form, file limits, "
+        "private exclusions, and frozen research deployment receipts"
+    )
     return 0
 
 
