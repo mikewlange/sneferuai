@@ -14,7 +14,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import parse_qs, unquote, urlsplit
 
 
-ENTRY_PAGES = ("index.html", "atlas-preview.html")
+ENTRY_PAGES = ("index.html", "atlas-preview.html", "sod/index.html")
 REQUIRED_PATHS = ENTRY_PAGES + ("CNAME", ".nojekyll", "research")
 FORBIDDEN_PATHS = (
     "atlas.html",
@@ -367,6 +367,28 @@ def validate(root: Path) -> list[str]:
             errors.append("contact form must include company or fund")
         elif "required" in fields["company_or_fund"]:
             errors.append("company or fund must remain optional")
+
+    sod = documents.get((root / "sod/index.html").resolve())
+    if sod is not None:
+        if len(sod.forms) != 1:
+            errors.append(f"sod/index.html must contain one beta sign-up form; found {len(sod.forms)}")
+        else:
+            form = sod.forms[0]
+            if form.get("action") != FORM_ACTION:
+                errors.append("beta sign-up form action is not the approved Formspree endpoint")
+            if (form.get("method") or "").lower() != "post":
+                errors.append("beta sign-up form method must be POST")
+            if form.get("id") != "join-form" or "data-onsite-submit" not in form:
+                errors.append("beta sign-up form must use the on-site submission flow")
+        if "join-form-status" not in sod.ids:
+            errors.append("beta sign-up form must include an on-site status message")
+        fields = {attrs.get("name"): attrs for attrs in sod.form_fields}
+        for name in ("name", "email"):
+            if name not in fields or "required" not in fields[name]:
+                errors.append(f"beta sign-up form must require {name}")
+        extra = sorted(str(name) for name in fields if name not in {"name", "email", "_subject", "_gotcha"})
+        if extra:
+            errors.append(f"beta sign-up form collects only name and email; found {', '.join(extra)}")
 
     return errors
 
