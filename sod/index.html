@@ -20,7 +20,7 @@
    Scores are 0–10; anything under 5 is drawn as "killed" in the Bloom.
    ═════════════════════════════════════════════════════════════════════════ */
 window.SOD_COPY = {
-  bar: { sod: 'Software On Demand', cta: 'Join Beta' },
+  bar: { sod: 'Software On Demand', cta: 'Build Something' },
 
   hero: { eyebrow: 'Sneferu · Software On Demand', headline: 'What do you want to build?', scroll: 'Scroll' },
 
@@ -142,7 +142,7 @@ window.SOD_COPY = {
     release: { title: 'Your app', status: 'Accepted · locked', rows: [['Version', 'certify · v1'], ['Fingerprint', '9c41…e7f2']], buttons: ['Download', 'Push to GitHub', 'Run it'], foot: 'The same code you tried in the preview. It never changes.' },
   },
 
-  close: { headline: 'Get it done right the first time', cta: 'Join Beta', footer: { by: 'powered by', name: 'Sneferu.ai, Inc.' } },
+  close: { headline: 'Get it done right the first time', cta: 'Build Something', footer: { by: 'powered by', name: 'Sneferu.ai, Inc.' } },
 
   // the beta sign-up: the same form and inbox as sneferu.ai, name and email only
   join: { eyebrow: 'Software On Demand', title: 'Join the beta', lede: 'Leave your name and email and we’ll be in touch.',
@@ -807,32 +807,76 @@ C.delivery.invoice.rows.forEach(([k,v])=>{h('span',null,k,$('#invoice-kv'));h('b
 C.delivery.release.rows.forEach(([k,v],i)=>{h('span',null,k,$('#release-kv'));h('b',i?'mono':null,v,$('#release-kv'));});
 C.delivery.release.buttons.forEach((b,i)=>{const n=h('button','btn'+(i?' ghost':''),b,$('#release-actions'));n.type='button';if(!i)n.id='dl-btn';});
 
-/* ───────────── the character (seen from behind, lit by the screen) ───────────── */
-function personSVG(id){
+/* ───────────── the character (seen from behind, lit by the screen) ─────────────
+   Six people sit at that keyboard. One is picked at random each visit and stays for the
+   whole scroll, so the story still follows a single customer and no one person is "the"
+   customer. Add ?person=0…5 to the address to hold one still. */
+const PEOPLE = [
+  // hands, neck and nape always share one skin, or the figure reads as a costume
+  { skin:'#C99271', dark:'#A97556', hair:['#4A3529','#1B120E'], coat:['#40434D','#1D1F25'], head:'tail',   ear:true  },
+  { skin:'#7A4C2E', dark:'#5E3821', hair:['#2A1D17','#100A08'], coat:['#3A4652','#191F27'], head:'crop',   ear:false },
+  { skin:'#E3BC98', dark:'#C29A78', hair:['#7B5A31','#3B2913'], coat:['#4A3D4C','#211C22'], head:'bun',    ear:true  },
+  { skin:'#5E3A22', dark:'#472B18', hair:['#241812','#0D0807'], coat:['#434A3C','#1D211A'], head:'curls',  ear:true  },
+  { skin:'#D2A882', dark:'#B08664', hair:['#9A9DA4','#55575D'], coat:['#4A4038','#221E1A'], head:'silver', ear:false },
+  { skin:'#A8703F', dark:'#85552C', hair:['#4C3C54','#241C29'], coat:['#3B3F49','#1B1D23'], head:'wrap',   ear:false }
+];
+const WHO = (()=>{ const q=parseInt(new URLSearchParams(location.search).get('person'),10);
+  return PEOPLE[Number.isInteger(q)&&q>=0&&q<PEOPLE.length ? q : Math.floor(Math.random()*PEOPLE.length)]; })();
+
+function headSVG(w,id){
+  const hr=`url(#${id}-hr)`;
+  // what the screen light catches, whatever is on the head
+  const sheen=`<path d="M262,118 C280,96 320,96 338,118" fill="none" stroke="rgba(243,238,226,.09)" stroke-width="2"/>
+    <path d="M240,152 C250,112 275,92 300,90 C325,92 350,112 360,152" fill="none" stroke="rgba(243,238,226,.24)" stroke-width="3" stroke-linecap="round"/>`;
+  const nape=`<circle cx="300" cy="230" r="31" fill="${w.hair[1]}"/>`;
+  const ear=w.ear?`<circle cx="365" cy="196" r="5" fill="none" stroke="#D8B567" stroke-width="2"/>`:'';
+  let head='';
+  if(w.head==='tail'){          // gathered at the nape, falling over the collar
+    head=`${nape}<path d="M300,244 C286,292 290,344 300,380 C310,344 314,292 300,244 Z" fill="${hr}"/>
+      <ellipse cx="300" cy="166" rx="66" ry="76" fill="${hr}"/>`;
+  }else if(w.head==='crop'){    // cut close
+    head=`<ellipse cx="300" cy="170" rx="61" ry="69" fill="${hr}"/>`;
+  }else if(w.head==='bun'){     // wound up, high on the head
+    head=`${nape}<ellipse cx="300" cy="166" rx="66" ry="76" fill="${hr}"/>
+      <circle cx="300" cy="104" r="27" fill="${hr}"/><circle cx="300" cy="104" r="27" fill="none" stroke="rgba(243,238,226,.16)" stroke-width="2"/>`;
+  }else if(w.head==='curls'){   // texture around the crown
+    let ring='';
+    for(let i=0;i<14;i++){ const a=i/14*Math.PI*2, rx=64+ (i%3)*3;
+      ring+=`<circle cx="${(300+rx*Math.cos(a)).toFixed(1)}" cy="${(170+(rx+8)*Math.sin(a)*.92).toFixed(1)}" r="${13+(i%4)*2.2}" fill="${hr}"/>`; }
+    head=`${nape}${ring}<ellipse cx="300" cy="170" rx="64" ry="72" fill="${hr}"/>`;
+  }else if(w.head==='silver'){  // shorter, grey
+    head=`<ellipse cx="300" cy="168" rx="63" ry="71" fill="${hr}"/>`;
+  }else{                        // a covered head: cloth over the crown, draped to the shoulders
+    head=`<path d="M258,214 C258,256 342,256 342,214 L348,268 C330,278 270,278 252,268 Z" fill="${w.hair[1]}"/>
+      <ellipse cx="300" cy="168" rx="74" ry="82" fill="${hr}"/>
+      <path d="M232,182 C258,150 342,150 368,182" fill="none" stroke="rgba(243,238,226,.14)" stroke-width="3" stroke-linecap="round"/>`;
+  }
+  return head+sheen+ear;
+}
+
+function personSVG(id,w){
+  w = w || WHO;
   let keys='';
   for(let r=0;r<3;r++)for(let c=0;c<15;c++){if(r===2&&c>4&&c<10)continue;keys+=`<rect x="${196+c*14.4}" y="${120+r*10}" width="11" height="6" rx="1.5" fill="rgba(243,238,226,.10)"/>`;}
   keys+=`<rect x="268" y="140" width="64" height="6" rx="1.5" fill="rgba(243,238,226,.10)"/>`;
+  const fingers=rows=>rows.map(([x,y,h])=>`<rect x="${x}" y="${y}" width="7" height="${h}" rx="3.5" fill="${w.skin}"/>`).join('');
   return `<div class="person" id="${id}" aria-hidden="true"><svg viewBox="0 0 600 480">
   <defs>
-    <linearGradient id="${id}-jk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#40434D"/><stop offset="1" stop-color="#1D1F25"/></linearGradient>
-    <linearGradient id="${id}-hr" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#3E2C23"/><stop offset="1" stop-color="#1B120E"/></linearGradient>
+    <linearGradient id="${id}-jk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${w.coat[0]}"/><stop offset="1" stop-color="${w.coat[1]}"/></linearGradient>
+    <linearGradient id="${id}-hr" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="${w.hair[0]}"/><stop offset="1" stop-color="${w.hair[1]}"/></linearGradient>
     <radialGradient id="${id}-gl" cx="50%" cy="10%" r="65%"><stop offset="0" stop-color="#E2946C" stop-opacity=".22"/><stop offset="1" stop-color="#E2946C" stop-opacity="0"/></radialGradient>
   </defs>
   <rect x="186" y="112" width="228" height="40" rx="9" fill="#171A20" stroke="rgba(243,238,226,.10)"/>${keys}
   <g class="body">
-    <path d="M208,340 C198,262 222,186 252,140" stroke="#3A3D47" stroke-width="38" stroke-linecap="round" fill="none"/>
-    <path d="M392,340 C402,262 378,186 348,140" stroke="#3A3D47" stroke-width="38" stroke-linecap="round" fill="none"/>
-    <g class="hand hand-l"><rect x="236" y="116" width="7" height="18" rx="3.5" fill="#C99271"/><rect x="246" y="112" width="7" height="20" rx="3.5" fill="#C99271"/><rect x="256" y="113" width="7" height="19" rx="3.5" fill="#C99271"/><rect x="266" y="118" width="7" height="16" rx="3.5" fill="#C99271"/><ellipse cx="253" cy="138" rx="20" ry="13" fill="#C99271"/></g>
-    <g class="hand hand-r"><rect x="327" y="118" width="7" height="16" rx="3.5" fill="#C99271"/><rect x="337" y="113" width="7" height="19" rx="3.5" fill="#C99271"/><rect x="347" y="112" width="7" height="20" rx="3.5" fill="#C99271"/><rect x="357" y="116" width="7" height="18" rx="3.5" fill="#C99271"/><ellipse cx="347" cy="138" rx="20" ry="13" fill="#C99271"/></g>
+    <path d="M208,340 C198,262 222,186 252,140" stroke="${w.coat[0]}" stroke-width="38" stroke-linecap="round" fill="none"/>
+    <path d="M392,340 C402,262 378,186 348,140" stroke="${w.coat[0]}" stroke-width="38" stroke-linecap="round" fill="none"/>
+    <g class="hand hand-l">${fingers([[236,116,18],[246,112,20],[256,113,19],[266,118,16]])}<ellipse cx="253" cy="138" rx="20" ry="13" fill="${w.skin}"/></g>
+    <g class="hand hand-r">${fingers([[327,118,16],[337,113,19],[347,112,20],[357,116,18]])}<ellipse cx="347" cy="138" rx="20" ry="13" fill="${w.skin}"/></g>
     <path d="M108,480 C110,352 184,270 300,264 C416,270 490,352 492,480 Z" fill="url(#${id}-jk)"/>
     <path d="M108,480 C110,352 184,270 300,264 C416,270 490,352 492,480 Z" fill="url(#${id}-gl)"/>
     <path d="M150,338 C205,286 250,266 300,264 C350,266 395,286 450,338" fill="none" stroke="rgba(243,238,226,.16)" stroke-width="3" stroke-linecap="round"/>
-    <rect x="279" y="196" width="42" height="80" rx="18" fill="#A97556"/>
-    <circle cx="300" cy="230" r="31" fill="#1B120E"/>
-    <ellipse cx="300" cy="166" rx="66" ry="76" fill="url(#${id}-hr)"/>
-    <path d="M262,118 C280,96 320,96 338,118" fill="none" stroke="rgba(243,238,226,.09)" stroke-width="2"/>
-    <path d="M240,152 C250,112 275,92 300,90 C325,92 350,112 360,152" fill="none" stroke="rgba(243,238,226,.24)" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="365" cy="196" r="5" fill="none" stroke="#D8B567" stroke-width="2"/>
+    <rect x="279" y="196" width="42" height="80" rx="18" fill="${w.dark}"/>
+    ${headSVG(w,id)}
   </g></svg></div>`;
 }
 $('#person1-slot').outerHTML=personSVG('person1');
