@@ -22,7 +22,7 @@
 window.SOD_COPY = {
   bar: { sod: 'Software On Demand', cta: 'Sign Up' },
 
-  hero: { eyebrow: 'Sneferu · Software On Demand', headline: 'What do you want to build?', scroll: 'Scroll' },
+  hero: { eyebrow: 'Software On Demand', headline: 'What do you want to build?', scroll: 'Scroll' },
 
   box: {
     build: { label: 'Tell us what to build.', placeholder: 'The product, the people using it, and what success looks like.',
@@ -283,7 +283,12 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--copper2);outline-of
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 /* load reveal on the inner .rv only — the outer .eyebrow / .cue are driven by the scroll timeline (GSAP reads them, so nothing else may animate them) */
-#s-ask .hero .eyebrow .rv{display:block;animation:rise .9s .6s var(--ease) backwards}
+#s-ask .hero .eyebrow .rv{display:flex;align-items:center;justify-content:center;gap:16px;animation:rise .9s .6s var(--ease) backwards}
+#s-ask .hero .eyebrow .eb-mark{flex:none;display:block;height:28px;width:auto}
+#s-ask .hero .eyebrow .eb-sod{padding-left:16px;border-left:1px solid var(--line2);}
+@media (max-width:640px){#s-ask .hero .eyebrow .rv{flex-direction:column;gap:12px}
+  #s-ask .hero .eyebrow .eb-mark{height:24px}
+  #s-ask .hero .eyebrow .eb-sod{padding-left:0;border-left:0}}
 #s-ask .cue .rv{display:grid;justify-items:center;gap:8px;animation:fadein 1s 1.3s var(--ease) backwards}
 #s-ask .hero .lede{max-width:36em;font-size:clamp(18px,1.7vw,24px);color:var(--ink);opacity:.85}
 #s-ask .cue{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);
@@ -605,7 +610,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--copper2);outline-of
 <section class="scene" id="s-ask">
   <div class="pin">
     <div class="hero" id="hero">
-      <div class="eyebrow"><span class="rv" data-c="hero.eyebrow">Sneferu · Software On Demand</span></div>
+      <div class="eyebrow"><span class="rv"><img class="eb-mark" src="/assets/sneferu-logo.svg" alt="Sneferu" width="2284" height="299"><span class="eb-sod" data-c="hero.eyebrow">Software On Demand</span></span></div>
       <h1 class="display" id="h1">What do you want to build?</h1>
     </div>
     <!-- .rv = the load reveal (CSS); the outer element belongs to the scroll timeline. Two elements, so the two never fight. -->
