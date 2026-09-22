@@ -90,9 +90,9 @@ header.masthead{
 .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(30px,4.5vw,64px);align-items:center}
 .hero-grid .shot{margin-top:0}
 @media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero-grid .shot{max-width:640px}}
-.premise-grid{align-items:start;margin-top:14px}
+.premise-grid,.sod-grid{align-items:start;margin-top:14px}
 .premise-grid h2{margin-top:0}
-.premise-media{display:grid;gap:22px;min-width:0}
+.premise-media,.sod-media{display:grid;gap:22px;min-width:0}
 .premise-media .shot{margin-top:0}
 .founder-video-stage{position:relative;background:#000;line-height:0;overflow:hidden}
 .hero-video video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
@@ -108,7 +108,7 @@ header.masthead{
 .hero-video.is-playing .founder-video-play{display:none}
 .hero-video .video-length{display:block;margin-top:7px;font-family:var(--mono);font-size:10px;
   line-height:1.4;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-@media(max-width:980px){.premise-media{max-width:640px}}
+@media(max-width:980px){.premise-media,.sod-media{max-width:640px}}
 h1{
   font-size:clamp(42px,6.4vw,78px);line-height:1.04;font-weight:300;
   letter-spacing:-.015em;margin:0 0 30px;max-width:15ch;
@@ -429,6 +429,7 @@ section:first-of-type{border-top:0}
   line-height:1.4;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
 .biz-name b{font-family:var(--serif);font-size:19px;font-weight:500;color:var(--ink)}
 .shotgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.shotgrid .span2{grid-column:1/-1}
 .shotgrid .shot{margin-top:0;display:flex;flex-direction:column}
 .shotgrid .shot img{aspect-ratio:16/10;object-fit:cover;object-position:top center}
 .shotgrid .shot figcaption{flex:1}
@@ -566,6 +567,15 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
   .ex-head,.ex-foot,.ex-note{padding-left:12px;padding-right:12px}
 }
 
+/* Software On Demand: a product band between the chapters. It borrows the section
+   rhythm but is not a numbered chapter, so it never shifts the folio or the grounds. */
+.sod-band{display:block;position:relative;border-top:1px solid var(--hair);
+  padding:104px 0 96px;background:var(--night-2)}
+.sod-band h2{margin-top:10px}
+.sod-band .sod-go{margin:30px 0 0;max-width:none}
+.sod-band .sm-note{margin-top:14px}
+@media(max-width:760px){.sod-band{padding:72px 0 64px}}
+
 /* chapter marks + parallax */
 .chapter{display:flex;align-items:baseline;gap:18px;margin-bottom:4px}
 .chapter .num{font-family:var(--mono);font-size:11px;color:var(--copper);letter-spacing:.18em}
@@ -594,6 +604,7 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
     </button>
     <nav class="mastlinks" id="site-nav" aria-label="Primary navigation">
       <a href="#premise" data-sec="premise">Premise</a>
+      <a href="#sod" data-sec="sod">On demand</a>
       <a href="#does" data-sec="does">System</a>
       <a href="#drive" data-sec="drive">Drive it</a>
       <a href="#runs" data-sec="runs">Workflows</a>
@@ -650,6 +661,53 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
     </div>
   </div>
 </section>
+
+<!-- SECTION: software on demand (a product, not a chapter — kept out of the numbering) -->
+<aside id="sod" class="sod-band" aria-labelledby="sod-h">
+  <div class="wrap">
+    <div class="chapter"><span class="num">SOD</span><span class="nm">Software On Demand</span></div>
+    <div class="hero-grid sod-grid">
+      <div>
+        <h2 id="sod-h">The first product built on Sneferu.</h2>
+        <p>Tell it what to build. Rival models argue out the specification, and you approve the words before any code is written. The coders build it and do not stop until the whole specification works. It is tested, installed on a clean machine and run against the real task before you ever see it.</p>
+        <p>Then you try the finished app yourself. If it is not right, you say what to fix and it is proved again. You pay for the work actually done, and you get exactly what you tried.</p>
+        <div class="rule-line">The same engine, the same evidence. <em>Sold by the finished job.</em></div>
+        <p class="sod-go"><a class="sm-cta" href="/sod">See how it works</a></p>
+        <p class="sm-note">A two-minute scroll through the whole process, end to end. The beta sign-up is on that page.</p>
+      </div>
+      <div class="sod-media">
+        <figure class="shot">
+          <img src="assets/shots/sod-build.webp" loading="lazy" alt="The Build form: the product request, how hard the models argue the plan, the coder seats, and the quote, on one page" />
+          <figcaption><b>One form, before any money moves</b>Describe the product, choose how hard
+          Sneferu argues the plan, pick the coders. The quote and the spending ceiling are shown
+          before anything runs, and nothing starts until you approve them.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="shotgrid">
+      <figure class="shot">
+        <img src="assets/shots/sod-spec.webp" loading="lazy" alt="An approved specification: versioned, hashed, with its own table of contents" />
+        <figcaption><b>The words you approve</b>The specification the models argued out, versioned
+        and hashed &mdash; <em>Approved &middot; v1 &middot; sha 08982e0821fe</em>. Nothing is coded
+        until you have read it and said so.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/shots/sod-blooms.webp" loading="lazy" alt="Published idea blooms: 177 directions explored on one question, scored and pruned" />
+        <figcaption><b>Or start from an idea</b>Published blooms &mdash; <em>177 directions</em> on
+        one question, argued and pruned down to three. Build from any of them, and the request is
+        copied into a new Build with every other choice still yours.</figcaption>
+      </figure>
+      <figure class="shot span2">
+        <img src="assets/shots/sod-preview.webp" loading="lazy" alt="A finished product running: its own API explorer, served from its own host" />
+        <figcaption><b>What comes back</b>A working application on its own host, serving its own API
+        &mdash; not a mockup, and not a screenshot of one. You use it before you accept it.</figcaption>
+      </figure>
+    </div>
+  </div>
+</aside>
+
+
 
 <section id="does">
   <div class="wrap">
@@ -979,7 +1037,7 @@ footer{border-top:1px solid var(--hair);padding:34px 0 56px}
       <div class="case-head">
         <div class="case-letter">A</div>
         <div><span class="case-kicker">Exhibit A</span>
-          <h3>It built the control system for its own model distillery.</h3>
+          <h3>It built the workshop where its own models get better.</h3>
           <p>One sentence became a system that finds where an AI model is weak, gives it focused
           new training, protects what it already knows, and refuses to replace it unless the new
           version is genuinely better.</p>
@@ -6410,7 +6468,7 @@ godot --headless --path &lt;project-root&gt; --script tools/attract_capture.gd -
   var secs = links.map(function(a){
     return {link:a, el:document.getElementById(a.getAttribute('data-sec'))};
   }).filter(function(x){ return x.el; });
-  var pageSections = [].slice.call(document.querySelectorAll('main > section[id]'));
+  var pageSections = [].slice.call(document.querySelectorAll('main > section[id], main > aside[id]'));
   var ticking = false;
   function mark(){
     ticking = false;
