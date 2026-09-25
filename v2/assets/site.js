@@ -23,8 +23,12 @@
     motionButton.disabled = reducedMotion.matches;
     motionButton.setAttribute('aria-pressed', String(!enabled));
     motionButton.setAttribute('aria-label', enabled ? 'Pause decorative motion' : 'Resume decorative motion');
-    motionButton.querySelector('.motion-label').textContent = reducedMotion.matches ? 'Reduced motion' : enabled ? 'Motion on' : 'Motion off';
-    motionButton.querySelector('.motion-icon').textContent = enabled ? 'Ⅱ' : '▷';
+    // The homepage uses an icon-only control. Optional decoration must not
+    // prevent the navigation, tabs, dialogs, and form from initializing.
+    const label = motionButton.querySelector('.motion-label');
+    const icon = motionButton.querySelector('.motion-icon');
+    if (label) label.textContent = reducedMotion.matches ? 'Reduced motion' : enabled ? 'Motion on' : 'Motion off';
+    if (icon) icon.textContent = enabled ? 'Ⅱ' : '▷';
   };
 
   // ── Scroll reveals: sections below the fold rise in once, then stay put.

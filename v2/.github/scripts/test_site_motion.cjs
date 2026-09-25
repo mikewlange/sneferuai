@@ -7,7 +7,7 @@ const {resolve} = require('node:path');
 const vm = require('node:vm');
 const source = readFileSync(resolve(__dirname, '../../assets/site.js'), 'utf8');
 
-function boot({reduced = false, observer = true} = {}) {
+function boot({reduced = false, observer = true, labelPresent = true, iconPresent = true} = {}) {
   const events = {};
   const media = {matches: reduced, addEventListener: (_, handler) => { events.media = handler; }};
   const label = {};
@@ -15,7 +15,7 @@ function boot({reduced = false, observer = true} = {}) {
   const button = {
     attrs: {},
     setAttribute(name, value) { this.attrs[name] = value; },
-    querySelector(selector) { return selector === '.motion-label' ? label : icon; },
+    querySelector(selector) { return selector === '.motion-label' ? (labelPresent ? label : null) : (iconPresent ? icon : null); },
     addEventListener(_, handler) { events.click = handler; },
   };
   const classes = new Set();
@@ -23,10 +23,23 @@ function boot({reduced = false, observer = true} = {}) {
     classList: {add: (...names) => names.forEach(name => classes.add(name)), remove: name => classes.delete(name)},
     getBoundingClientRect: () => ({top: 900}),
   };
+  const panels = ['software', 'business', 'research', 'games'].map((name, index) => ({
+    id: `panel-${name}`, hidden: index !== 0, pauses: 0,
+    querySelectorAll() { return name === 'games' ? [{pause: () => { this.pauses++; }}] : []; },
+  }));
+  const tabs = panels.map((panel, index) => ({
+    attrs: {'aria-controls': panel.id, 'aria-selected': String(index === 0)},
+    tabIndex: index === 0 ? 0 : -1, events: {},
+    setAttribute(name, value) { this.attrs[name] = value; },
+    getAttribute(name) { return this.attrs[name]; },
+    addEventListener(name, handler) { this.events[name] = handler; },
+    focus() { this.focused = true; },
+  }));
   const document = {
     documentElement: {dataset: {}},
     querySelector: selector => selector === '.motion-toggle' ? button : null,
-    querySelectorAll: selector => selector.startsWith('.split-heading') ? [element] : [],
+    querySelectorAll: selector => selector.startsWith('.split-heading') ? [element] : selector === '[role="tablist"]' ? [{querySelectorAll: () => tabs}] : [],
+    getElementById: id => panels.find(panel => panel.id === id),
     addEventListener: (name, handler) => { events[name] = handler; },
   };
   const window = {innerHeight: 800, matchMedia: query => query.includes('reduced-motion') ? media : {addEventListener() {}}};
@@ -37,8 +50,45 @@ function boot({reduced = false, observer = true} = {}) {
   }
   if (observer) window.IntersectionObserver = IntersectionObserver;
   vm.runInNewContext(source, {window, document, IntersectionObserver});
-  return {document, events, media, button, label, classes, element};
+  return {document, events, media, button, label, classes, element, tabs, panels};
 }
+
+function assertSelected(state, index) {
+  state.tabs.forEach((tab, i) => {
+    assert.equal(tab.attrs['aria-selected'], String(i === index));
+    assert.equal(tab.tabIndex, i === index ? 0 : -1);
+    assert.equal(state.panels[i].hidden, i !== index);
+  });
+}
+
+test('the actual homepage motion-button markup does not prevent tab initialization', () => {
+  const home = readFileSync(resolve(__dirname, '../../index.html'), 'utf8');
+  const control = home.match(/<button\b[^>]*class="motion-toggle"[^>]*>[\s\S]*?<\/button>/)[0];
+  const state = boot({labelPresent: control.includes('class="motion-label"'), iconPresent: control.includes('class="motion-icon"')});
+  state.tabs.forEach((tab, index) => { tab.events.click(); assertSelected(state, index); });
+});
+
+test('optional motion-label and icon cannot break clicks or keyboard tab selection', () => {
+  for (const reduced of [false, true]) {
+    for (const [labelPresent, iconPresent] of [[false, true], [true, false], [false, false]]) {
+      const state = boot({reduced, labelPresent, iconPresent});
+      state.tabs[1].events.click();
+      assertSelected(state, 1);
+      let prevented = false;
+      state.tabs[1].events.keydown({key: 'End', preventDefault() { prevented = true; }});
+      assert.ok(prevented);
+      assertSelected(state, 3);
+      assert.ok(state.tabs[3].focused);
+      state.tabs[3].events.keydown({key: 'ArrowDown', preventDefault() {}});
+      assertSelected(state, 0);
+      assert.ok(state.panels[3].pauses > 0, 'leaving Games pauses its video');
+      state.events.click();
+      assert.equal(state.button.attrs['aria-pressed'], 'true');
+      state.tabs[2].events.click();
+      assertSelected(state, 2);
+    }
+  }
+});
 
 test('visitor can pause and resume; pausing reveals every pending section', () => {
   const state = boot();
