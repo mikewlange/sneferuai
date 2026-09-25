@@ -2,7 +2,9 @@
 
 Dark, animated, platform-first. Upgraded September 24, 2026: new copy, constant names,
 a product surface in the hero, and restrained SOD-style motion.
-This is a self-contained copy of the site, not a deployment.
+Selected as the main-site design on September 25, 2026. The root `index.html`
+and `system.html` now match these pages, using `v2/assets/` for their shared assets.
+This source change is not itself a deployment.
 
 ## What changed on September 24
 
@@ -59,7 +61,11 @@ or serving it under a `/v2/` URL prefix.
 The contact form retains the real Formspree destination. Do not submit test
 messages unless you intend to send them. No confidential documents are included.
 
-Nothing has been committed, pushed, or published, and no application or fleet
-configuration was changed. To go live: copy `index.html`, `system.html`, `assets/site.css`,
-`assets/site.js`, `assets/sneferu-mark-on-dark.svg`, and the three files in
-`.github/scripts/` over the repo root, run the tests above from the root, then push.
+The root pages retain the original asset bundle for older pages; do not overwrite
+root `assets/site.css` or `assets/site.js` with this version. Update both overview
+copies together and refresh the CSS/JS content-hash query strings when those files
+change. The root tests enforce this. The original homepage remains saved as
+`field-notes.html`, with no link from the new overview pages.
+
+Build and validate from the repository root before publishing through the existing
+GitHub Pages workflow. No application, SOD, or fleet configuration is involved.

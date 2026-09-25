@@ -15,15 +15,22 @@ and workflow files. It preserves the public `research/` archive, `CNAME`, and
 
 ## Website structure
 
-- `index.html`: the platform-first overview, product examples, workflows, SOD,
-  and contact form.
-- `system.html`: a plain-language explanation of the engines, Snef, and fleet.
+- `index.html`: the selected V2 design, promoted to the main landing page.
+- `system.html`: V2's plain-language explanation of the engines, Snef, and fleet.
 - `field-notes.html`: the preserved previous homepage and its detailed records,
-  labeled as an archive rather than current operating status.
+  labeled as an archive rather than current operating status. It stays saved,
+  but the new homepage and system page do not link to it.
 - `sod/index.html`: the existing Software On Demand product page, unchanged.
 - `atlas-preview.html` and `research/`: existing public reference material.
-- `assets/site.css` and `assets/site.js`: shared styles and accessible interactions
-  for the new overview pages. No framework or application backend is required.
+- `v2/assets/`: shared V2 styles, scripts, logos, and media used by the new root
+  pages and `/v2/`. CSS and JavaScript URLs include content-hash cache versions.
+- `assets/site.css` and `assets/site.js`: retained unchanged for `/v3/` and other
+  existing pages. No framework or application backend is required.
+
+The root overview pages match the V2 copies except for their asset prefix
+(`v2/assets/` at the root, `assets/` within V2). Tests enforce that relationship.
+When updating these pages, keep both copies aligned. When editing V2 CSS or JS,
+refresh their `?v=` values with the first 12 characters of the file's SHA-256 hash.
 
 The dark overview features ESM-Gateway and HungerHall alongside the existing
 product examples. ESM visuals describe the memory architecture, not a live feed.
@@ -39,18 +46,19 @@ Build with `python3 .github/scripts/build_site.py`, then check the artifact with
 Run the safety and markup checks with
 `python3 -m unittest discover -s .github/scripts -p 'test_*.py'`.
 Run motion behavior checks with `node --test .github/scripts/test_site_motion.cjs`.
+Also run the selected design's checks:
+
+```sh
+python3 -m unittest discover -s v2/.github/scripts -p 'test_*.py'
+node --test v2/.github/scripts/test_site_motion.cjs
+```
 
 Before new public files are tracked, pass an explicit `--include relative/file`
 for each one. The builder never discovers or publishes untracked files implicitly.
-The redesign draft uses:
+All landing-page files are already tracked. The preview uses:
 
 ```sh
-python3 .github/scripts/build_site.py \
-  --include system.html --include field-notes.html \
-  --include assets/site.css --include assets/site.js \
-  --include assets/sneferu-logo-on-light.svg \
-  --include assets/sneferu-logo-on-dark.svg \
-  --include assets/sneferu-mark-on-light.svg
+python3 .github/scripts/build_site.py
 python3 .github/scripts/validate_site.py --root _site
 python3 -m http.server 8765 --bind 127.0.0.1 --directory _site
 ```

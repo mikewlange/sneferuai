@@ -1,9 +1,11 @@
 """Run with python3 -m unittest discover -s .github/scripts -p 'test_*.py'."""
 from html.parser import HTMLParser
+from hashlib import sha256
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
 from unittest import TestCase, main
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 import build_site
 
@@ -94,7 +96,7 @@ class OverviewTests(TestCase):
                 if tag == 'img':
                     self.assertTrue(attrs.get('alt'))
                 if tag == 'script':
-                    self.assertEqual(attrs.get('src'), '/assets/site.js')
+                    self.assertEqual(urlsplit(attrs.get('src', '')).path, 'v2/assets/site.js')
 
     def test_existing_contact_destination_preserved(self):
         forms = [attrs for tag, attrs in self.home if tag == 'form']
@@ -111,6 +113,34 @@ class OverviewTests(TestCase):
             for tag, attrs in nodes:
                 if tag == 'video':
                     self.assertNotIn('autoplay', attrs)
+
+    def test_root_is_the_selected_v2_design_with_shared_assets(self):
+        for page in ['index.html', 'system.html']:
+            source = (ROOT / 'v2' / page).read_text(encoding='utf-8')
+            expected = source.replace('="assets/', '="v2/assets/')
+            self.assertEqual((ROOT / page).read_text(encoding='utf-8'), expected)
+
+    def test_shared_scripts_and_styles_have_current_cache_versions(self):
+        for prefix in ['', 'v2/']:
+            for page in ['index.html', 'system.html']:
+                directory = ROOT / prefix
+                nodes = Elements((directory / page).read_text(encoding='utf-8')).nodes
+                for tag, attrs in nodes:
+                    reference = attrs.get('src') if tag == 'script' else attrs.get('href') if attrs.get('rel') == 'stylesheet' else None
+                    if not reference or urlsplit(reference).netloc:
+                        continue
+                    url = urlsplit(reference)
+                    digest = sha256((directory / url.path).read_bytes()).hexdigest()[:12]
+                    self.assertEqual(parse_qs(url.query).get('v'), [digest])
+
+    def test_new_pages_do_not_link_to_original_homepage(self):
+        for prefix in ['', 'v2/']:
+            for page in ['index.html', 'system.html']:
+                nodes = Elements((ROOT / prefix / page).read_text(encoding='utf-8')).nodes
+                self.assertFalse(any('field-notes.html' in attrs.get('href', '') for tag, attrs in nodes if tag == 'a'))
+        # Retain the existing archive, without adding it to the new navigation.
+        archive = (ROOT / 'field-notes.html').read_text(encoding='utf-8')
+        self.assertIn('Archived system field notes and recorded builds.', archive)
 
 
 if __name__ == '__main__':

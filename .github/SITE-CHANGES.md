@@ -1,5 +1,13 @@
 # Site change list (running, 2026-09-24)
 
+## September 25: promote V2 to the main landing page
+
+- Root homepage and Inside Sneferu now use the selected V2 design and its shared assets.
+- Removed original-site links from both overview copies. The existing field-notes archive is preserved unchanged.
+- Versioned CSS/JS URLs to avoid stale cached interactions. Older root assets, V3, SOD, and frozen research files are unchanged.
+- Added root/V2 parity, no-archive-link, cache-version, and interaction checks to the pre-publication workflow.
+- Prepared locally; commit, push, and deployed verification remain separate steps.
+
 Mike adds items as he goes. [done] = applied to the working tree (uncommitted).
 9. [done] Inside Sneferu page nav: the "How it works" entry is gone (its target section no longer exists).
 

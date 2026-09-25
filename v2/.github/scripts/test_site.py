@@ -5,6 +5,7 @@ from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
 from unittest import TestCase, main
 from unittest.mock import patch
+from urllib.parse import urlsplit
 
 import build_site
 
@@ -96,7 +97,7 @@ class OverviewTests(TestCase):
                     self.assertTrue(attrs.get('alt'))
                 if tag == 'script':
                     # document-relative on purpose: the same files serve at /v2/ (preview) and at the root (live)
-                    self.assertEqual(attrs.get('src'), 'assets/site.js')
+                    self.assertEqual(urlsplit(attrs.get('src', '')).path, 'assets/site.js')
 
     def test_existing_contact_destination_preserved(self):
         forms = [attrs for tag, attrs in self.home if tag == 'form']
