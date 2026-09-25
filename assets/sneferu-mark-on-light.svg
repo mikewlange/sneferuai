@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244.15 83.91" width="244.15" height="83.91" role="img" aria-labelledby="sn-mark-light-title sn-mark-light-desc">
+  <title id="sn-mark-light-title">Sneferu mark</title>
+  <desc id="sn-mark-light-desc">Sneferu mark: three forms, early to finished. For light backgrounds.</desc>
+  <defs>
+    <linearGradient id="sn-mark-light-early" gradientUnits="userSpaceOnUse" x1="0" y1="41.34" x2="0" y2="71.91"><stop offset="0" stop-color="#7C7668"/><stop offset="1" stop-color="#4F4A40"/></linearGradient>
+    <linearGradient id="sn-mark-light-mid" gradientUnits="userSpaceOnUse" x1="0" y1="28.41" x2="0" y2="71.91"><stop offset="0" stop-color="#A8813D"/><stop offset="1" stop-color="#6D4F1D"/></linearGradient>
+    <linearGradient id="sn-mark-light-copper" gradientUnits="userSpaceOnUse" x1="0" y1="12.00" x2="0" y2="71.91"><stop offset="0" stop-color="#CF9A71"/><stop offset="1" stop-color="#9A4D30"/></linearGradient>
+  </defs>
+  <polygon points="0.00,71.91 7.19,52.13 12.14,58.42 18.88,41.34 24.27,53.03 29.67,45.84 35.96,56.63 42.25,47.63 48.54,60.22 51.24,71.91" fill="url(#sn-mark-light-early)"/>
+  <polygon points="104.06,28.41 127.72,52.72 140.52,71.91 67.60,71.91 80.39,52.72" fill="url(#sn-mark-light-mid)"/>
+  <polygon points="194.99,12.00 232.15,71.91 157.83,71.91" fill="url(#sn-mark-light-copper)"/>
+</svg>

@@ -14,7 +14,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import parse_qs, unquote, urlsplit
 
 
-ENTRY_PAGES = ("index.html", "atlas-preview.html", "sod/index.html")
+ENTRY_PAGES = ("index.html", "system.html", "field-notes.html", "atlas-preview.html", "sod/index.html")
 REQUIRED_PATHS = ENTRY_PAGES + ("CNAME", ".nojekyll", "research")
 FORBIDDEN_PATHS = (
     "atlas.html",
@@ -232,7 +232,7 @@ def validate_research_deployments(root: Path, errors: list[str]) -> dict[str, st
         actual = {
             PurePosixPath(path.relative_to(deployment).as_posix())
             for path in deployment.rglob("*")
-            if path.is_file() and path != manifest_path
+            if path.is_file() and path != manifest_path and path.name != ".DS_Store"  # Finder metadata, git-ignored
         }
         missing = sorted(expected - actual, key=str)
         extra = sorted(actual - expected, key=str)
