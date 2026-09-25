@@ -27,15 +27,20 @@ and workflow files. It preserves the public `research/` archive, `CNAME`, and
 - `assets/site.css` and `assets/site.js`: retained unchanged for `/v3/` and other
   existing pages. No framework or application backend is required.
 
-The root overview pages match the V2 copies except for their asset prefix
-(`v2/assets/` at the root, `assets/` within V2). Tests enforce that relationship.
-When updating these pages, keep both copies aligned. When editing V2 CSS or JS,
-refresh their `?v=` values with the first 12 characters of the file's SHA-256 hash.
+The root overview pages are now the active editing surface. The `/v2/` pages
+remain a separate earlier design copy; their wording need not match root edits.
+Both use the shared V2 assets (`v2/assets/` at the root, `assets/` within V2).
+Tests protect the shared asset paths and main-page structure. When editing V2
+CSS or JS, refresh `?v=` in all four pages with the first 12 characters of the
+file's SHA-256 hash.
 
-The dark overview features ESM-Gateway and HungerHall alongside the existing
-product examples. ESM visuals describe the memory architecture, not a live feed.
-HungerHall uses the existing gameplay recording and the founder's first-playthrough
-quote. Decorative motion can be paused on either page and respects the visitor's
+The root overview's self-improvement section features ESM and FDC Studio under
+"Built with Sneferu for Sneferu." ESM visuals describe the memory architecture,
+not a live feed. FDC uses the original site's overview, audit, and Idea Bloom
+screenshots and explicitly identifies the demonstration as simulated, not a
+completed production fine-tune. HungerHall remains in the GitHub product strip
+and the Games tab. The original `field-notes.html` is preserved unchanged.
+Decorative motion can be paused on either page and respects the visitor's
 reduced-motion preference. Videos are user-initiated and pause when their dialog
 or workflow tab closes.
 

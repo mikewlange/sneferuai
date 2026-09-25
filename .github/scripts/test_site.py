@@ -1,6 +1,7 @@
 """Run with python3 -m unittest discover -s .github/scripts -p 'test_*.py'."""
 from html.parser import HTMLParser
 from hashlib import sha256
+import re
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
 from unittest import TestCase, main
@@ -81,7 +82,7 @@ class OverviewTests(TestCase):
     def test_case_buttons_have_named_dialogs(self):
         dialogs = {a['id']: a for tag, a in self.home if tag == 'dialog'}
         ids = {a['id'] for _, a in self.home if 'id' in a}
-        self.assertEqual(set(dialogs), {'life-dialog', 'restoration-dialog', 'flow-dialog', 'esm-dialog', 'hunger-dialog'})
+        self.assertEqual(set(dialogs), {'life-dialog', 'restoration-dialog', 'flow-dialog', 'esm-dialog', 'fdc-dialog'})
         for _, attrs in self.home:
             if 'data-dialog' in attrs:
                 self.assertIn(attrs['data-dialog'], dialogs)
@@ -114,11 +115,44 @@ class OverviewTests(TestCase):
                 if tag == 'video':
                     self.assertNotIn('autoplay', attrs)
 
-    def test_root_is_the_selected_v2_design_with_shared_assets(self):
+    def test_root_keeps_the_selected_design_with_shared_assets(self):
+        # The root is now the editing surface; /v2 is a retained design copy.
+        # Protect the shared design without forcing independent copy edits to match.
         for page in ['index.html', 'system.html']:
-            source = (ROOT / 'v2' / page).read_text(encoding='utf-8')
-            expected = source.replace('="assets/', '="v2/assets/')
-            self.assertEqual((ROOT / page).read_text(encoding='utf-8'), expected)
+            nodes = Elements((ROOT / page).read_text(encoding='utf-8')).nodes
+            self.assertEqual(sum(tag == 'main' and attrs.get('id') == 'main' for tag, attrs in nodes), 1)
+            self.assertTrue(any(attrs.get('id') == 'site-nav' for _, attrs in nodes))
+            self.assertEqual([urlsplit(attrs['href']).path for tag, attrs in nodes
+                              if tag == 'link' and attrs.get('rel') == 'stylesheet'
+                              and not urlsplit(attrs['href']).netloc], ['v2/assets/site.css'])
+        self.assertTrue({'top', 'platform', 'finishes', 'on-demand', 'origin', 'work', 'faq', 'contact'}
+                        <= {attrs.get('id') for tag, attrs in self.home if tag == 'section'})
+
+    def test_self_improvement_features_esm_and_fdc_not_the_game(self):
+        source = (ROOT / 'index.html').read_text(encoding='utf-8')
+        work = re.search(r'<section[^>]*id="work".*?</section>', source, re.S).group()
+        work_nodes = Elements(work).nodes
+        targets = {attrs['data-dialog'] for _, attrs in work_nodes if 'data-dialog' in attrs}
+        self.assertEqual(targets, {'esm-dialog', 'fdc-dialog'})
+        self.assertIn('05 / Built with Sneferu for Sneferu', work)
+        self.assertIn('Self-improvement.', work)
+        self.assertTrue(any(tag == 'img' and attrs.get('src') == 'v2/assets/shots/fdc-overview.webp'
+                            for tag, attrs in work_nodes))
+        ticker = re.search(r'<ul class="ticker-track">.*?</ul>', source, re.S).group()
+        self.assertIn('https://github.com/sneferu-ai/hungerhall', ticker)
+
+    def test_fdc_demo_retains_screenshots_and_simulation_boundary(self):
+        source = (ROOT / 'index.html').read_text(encoding='utf-8')
+        dialog = re.search(r'<dialog[^>]*id="fdc-dialog".*?</dialog>', source, re.S).group()
+        nodes = Elements(dialog).nodes
+        for shot in ['fdc-bloom.webp', 'fdc-overview.webp', 'fdc-audit.webp']:
+            self.assertTrue(any(tag == 'img' and attrs.get('src') == f'v2/assets/shots/{shot}'
+                                for tag, attrs in nodes), shot)
+            self.assertTrue((ROOT / 'v2/assets/shots' / shot).is_file())
+        self.assertIn('simulated model responses', dialog)
+        self.assertIn('not a completed production fine-tune', dialog)
+        self.assertIn('120-item test', dialog)
+        self.assertIn('36 traceable training examples', dialog)
 
     def test_shared_scripts_and_styles_have_current_cache_versions(self):
         for prefix in ['', 'v2/']:

@@ -1,5 +1,13 @@
 # Site change list (running, 2026-09-24)
 
+## September 25: self-improvement showcase
+
+- Main `index.html` section 05 is now "Built with Sneferu for Sneferu," featuring ESM and FDC Studio.
+- Replaced the HungerHall feature/dialog with the original FDC overview, audit ledger, and Idea Bloom screenshots. The demo remains clearly labeled as simulated model responses, not a production fine-tune.
+- HungerHall remains in the product scroller and Games tab. V1 `field-notes.html` and all its evidence remain unchanged.
+- Preserved the operator's root-page edits. Root and `/v2/` now have independent copy; tests protect the shared assets and functionality instead of requiring byte-for-byte page duplication.
+- Closed the showcase wrapper outside its commented-out extras so following sections are not accidentally nested inside it.
+
 ## September 25: promote V2 to the main landing page
 
 - Root homepage and Inside Sneferu now use the selected V2 design and its shared assets.

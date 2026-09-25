@@ -3,7 +3,9 @@
 Dark, animated, platform-first. Upgraded September 24, 2026: new copy, constant names,
 a product surface in the hero, and restrained SOD-style motion.
 Selected as the main-site design on September 25, 2026. The root `index.html`
-and `system.html` now match these pages, using `v2/assets/` for their shared assets.
+and `system.html` started from these pages, using `v2/assets/` for their shared assets.
+The root pages are now the active editing surface; this folder retains the earlier
+design copy, so root copy and showcase edits do not need to be duplicated here.
 This source change is not itself a deployment.
 
 ## What changed on September 24
@@ -62,8 +64,8 @@ The contact form retains the real Formspree destination. Do not submit test
 messages unless you intend to send them. No confidential documents are included.
 
 The root pages retain the original asset bundle for older pages; do not overwrite
-root `assets/site.css` or `assets/site.js` with this version. Update both overview
-copies together and refresh the CSS/JS content-hash query strings when those files
+root `assets/site.css` or `assets/site.js` with this version. Refresh the CSS/JS
+content-hash query strings in both root and V2 pages when those shared assets
 change. The root tests enforce this. The original homepage remains saved as
 `field-notes.html`, with no link from the new overview pages.
 
