@@ -193,12 +193,24 @@ test('the run panel starts at the request, then advances scene by scene on its t
   assert.equal(s.run.style.props['--run-progress'], '20%');
   assert.equal(s.timers.intervals.length, 1, 'the request is typed out');
   const next = s.timers.timeouts.at(-1);
-  assert.equal(next.ms, 3000);
+  assert.equal(next.ms, 6000);
   next.fn();
   assert.ok(s.scenes[1].classes.has('is-active'));
   assert.ok(!s.scenes[0].classes.has('is-active'));
   assert.ok(s.rail[0].classes.has('is-done'));
   assert.equal(s.state.textContent, 'Propose');
+});
+
+test('the run holds every scene twice as long and types at half speed', () => {
+  const s = bootRun();
+  assert.equal(s.timers.intervals.at(-1).ms, 40);
+  for (const duration of [6000, 4800, 6800, 6000, 5200]) {
+    const next = s.timers.timeouts.at(-1);
+    assert.equal(next.ms, duration);
+    assert.equal(s.run.style.props['--run-speed'], `${duration}ms`);
+    next.fn();
+  }
+  assert.equal(s.state.textContent, 'Request', 'the 28.8-second loop restarts normally');
 });
 
 test('pausing motion settles the run panel on its finished state with the whole request visible', () => {

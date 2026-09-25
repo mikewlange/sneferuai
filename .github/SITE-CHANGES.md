@@ -1,5 +1,11 @@
 # Site change list (running, 2026-09-24)
 
+## September 25: slower run illustration
+
+- Halved the hero run's playback speed: each of its five scenes stays visible twice as long, with slower request typing and matching progress timing. The loop now lasts 28.8 seconds.
+- Updated the caption in the root and retained V2 copy; refreshed shared-script cache versions. Other site animations are unchanged.
+- Added a timing regression test; pause, reduced-motion, and replay behavior remain covered. Local changes only, not published.
+
 ## September 25: self-improvement showcase
 
 - Main `index.html` section 05 is now "Built with Sneferu for Sneferu," featuring ESM and FDC Studio.

@@ -64,7 +64,8 @@
     const typed = run.querySelector('[data-run-type]');
     const replay = run.querySelector('[data-run-replay]');
     const labels = ['Request', 'Propose', 'Challenge', 'Prove', 'Finished'];
-    const durations = [3000, 2400, 3400, 3000, 2600];
+    // Half-speed playback gives each scene twice as much reading time.
+    const durations = [6000, 4800, 6800, 6000, 5200];
     const request = typed ? typed.textContent : '';
     let index = -1;
     let timer = 0;
@@ -91,7 +92,7 @@
         count += 1;
         typed.textContent = request.slice(0, count);
         if (count >= request.length) window.clearInterval(typing);
-      }, 20);
+      }, 40);
     };
     const step = () => {
       index = (index + 1) % scenes.length;
