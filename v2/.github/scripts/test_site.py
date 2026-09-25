@@ -167,8 +167,8 @@ class NamingTests(TestCase):
         for name in ['Snef', 'Sneferu Coders', 'Idea Bloom', 'Research Expedition', 'Game Autopilot',
                      'Business Autopilot', 'Software On Demand', 'ESM']:
             self.assertIn(name, self.pages['index.html'], f'homepage must name {name}')
-        # the engine's name may open a label ("Adversarial convergence"); the name is the same
-        self.assertIn('adversarial convergence', self.pages['index.html'].lower(), 'homepage must name adversarial convergence')
+        # the engine's name (adversarial convergence) lives on the Inside Sneferu page; the homepage
+        # no longer has an engine section (2026-09-24), so it is checked in CONSTANT_NAMES across pages only
 
     def test_retired_names_do_not_reappear(self):
         for page, text in self.pages.items():

@@ -73,6 +73,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .hero .micro{margin-top:20px}
 .hero-baseline{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:34px;margin-top:8px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
 .motion-toggle{display:inline-flex;gap:8px;align-items:center;border:0;color:var(--dim);padding:8px 0;min-height:32px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.hero-baseline-controls{justify-content:flex-end}
 .motion-toggle:hover{color:var(--ink)}.motion-toggle:disabled{opacity:1;cursor:default}
 .motion-icon{color:var(--copper);font-size:12px;min-width:12px}
 
@@ -148,6 +149,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .logo-flowforge-open img,.logo-verdict-foundry img{height:46px}
 .ticker-track li.logo:hover a,.ticker-track li.logo a:focus-visible{transform:translateY(-2px);filter:brightness(1.06)}
 .ticker-track li.logo a:focus-visible{outline:2px solid var(--copper);outline-offset:-2px;border-radius:14px}
+/* every tile is a link: a small corner mark says so on light and dark tiles alike; the caption under the strip says where */
+.ticker-track li.logo a{position:relative}
+.ticker-track li.logo a::after{content:"↗";position:absolute;top:5px;right:6px;display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:rgba(14,15,19,.78);color:var(--copper);font-size:10px;line-height:1;opacity:.85;transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.ticker-track li.logo:hover a::after,.ticker-track li.logo a:focus-visible::after{opacity:1;transform:translate(1px,-1px)}
+.ticker-note{margin:14px auto 0;font-size:11.5px;color:var(--muted);line-height:1.7}
 .logo-software-on-demand{--tile:#10100f}.logo-flowforge-open{--tile:#0f0f12}.logo-hungerhall{--tile:#171621}.logo-verdict-foundry{--tile:#f5f6f4}
 .logo-patchline{--tile:#1a1d24}.logo-agentnews{--tile:#faf9f6}.logo-rfp-shred{--tile:#f5f3ed}.logo-restoration-copilot{--tile:#1e1b27}
 .logo-coa-profiler{--tile:#fff}.logo-deepaudit{--tile:#101216}.logo-compliance-chronicle{--tile:#fff}
@@ -342,6 +348,15 @@ details p a{text-decoration:underline;text-underline-offset:3px}
 
 /* Contact */
 .contact-section{background:radial-gradient(60% 80% at 0 100%,rgba(201,118,78,.12),transparent 70%),var(--night-2)}
+.why-now-note{margin:22px 0 0;max-width:640px;font-size:15px;line-height:1.8;color:var(--muted)}
+.founder .eyebrow{display:block}
+.founder-video{margin:30px 0 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000}
+.founder-video video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
+.founder-video figcaption{padding:16px 18px;background:var(--panel);font-size:14px;line-height:1.7;color:var(--ink)}
+.founder-video figcaption b{display:block;margin-bottom:4px;font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--copper)}
+.founder-video .video-length{display:block;margin-top:6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.founder-bio{margin:30px 0 0;max-width:560px;font-size:15px;line-height:1.85;color:var(--ink)}
+.founder-bio i{font-family:var(--serif);font-style:italic;color:var(--copper-soft)}
 .contact-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:110px}
 .contact-layout h2{margin-top:22px}
 .contact-layout>div>p{max-width:380px;font-size:15px;line-height:1.9;margin:26px 0}
@@ -367,6 +382,7 @@ details p a{text-decoration:underline;text-underline-offset:3px}
 .footer-top>p{font-size:14px;line-height:1.8;color:var(--ink)}
 .footer-links{display:grid;gap:8px;font-size:12px}
 .footer-links a{color:var(--muted);transition:color .2s}.footer-links a:hover{color:var(--copper)}
+.footer-bottom .motion-toggle{margin-right:18px;vertical-align:middle;padding:0;min-height:0}
 .footer-bottom{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:20px 0 26px;font-size:10px;color:var(--dim);letter-spacing:.04em}
 
 /* Dialogs */
