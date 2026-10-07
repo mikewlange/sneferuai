@@ -29,6 +29,19 @@ jobs:
           node --test .github/scripts/test_site_motion.cjs
           node --test v2/.github/scripts/test_site_motion.cjs
 
+      - name: Set up purchase browser checks
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install purchase browser checks
+        run: |
+          python -m pip install -r .github/browser-requirements.txt
+          python -m playwright install --with-deps chromium webkit
+
+      - name: Test purchase and launch pages in Chromium and WebKit
+        run: python -m pytest .github/scripts/purchase_browser_checks.py -q
+
       - name: Build the public artifact
         run: python3 .github/scripts/build_site.py
 

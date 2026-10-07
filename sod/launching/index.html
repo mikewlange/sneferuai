@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Your node — Sneferu Software On Demand</title>
+  <style>
+    :root { color-scheme:dark; --canvas:#0d0c0c; --surface:#151413; --line:#4a433d; --text:#f2ede4; --muted:#aaa298; --brand:#e2ad84; --action:#d7bd99; --ink:#28170e; --good:#6fb58d; --serif:"Iowan Old Style",Palatino,Georgia,serif; --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; } [hidden] { display:none!important; }
+    body { margin:0; background:radial-gradient(circle at 15% 0,rgba(189,117,76,.13),transparent 36rem),var(--canvas); color:var(--text); font:16px/1.5 var(--sans); }
+    a { color:var(--action); } button,input { font:inherit; } button,a,input { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:2px solid var(--brand); outline-offset:4px; }
+    header { border-bottom:1px solid #35302c; } .bar { max-width:1140px; min-height:76px; margin:auto; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand img { display:block; width:190px; max-width:100%; height:28px; } .home { font-size:13px; text-decoration:none; }
+    main { max-width:1140px; margin:auto; padding:70px 32px 48px; display:grid; grid-template-columns:1.1fr 1fr; gap:28px 64px; align-items:start; }
+    .intro { grid-column:1; } .eyebrow { color:var(--brand); text-transform:uppercase; font-size:11px; font-weight:600; letter-spacing:.16em; margin:0 0 14px; }
+    h1 { font:500 clamp(38px,5vw,65px)/1.04 var(--serif); letter-spacing:-.025em; margin:0 0 24px; }
+    .lede { color:var(--muted); font-size:18px; margin:0; max-width:42ch; }
+    .card { grid-column:2; grid-row:1 / span 2; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:28px; min-width:0; }
+    .price { font-size:32px; font-weight:600; margin:0; } .price small { font-size:15px; color:var(--muted); font-weight:400; }
+    .terms { color:var(--muted); font-size:13px; margin:5px 0 20px; } label { display:block; font-size:13px; margin-bottom:5px; }
+    .field { margin:0 0 15px; } input { width:100%; min-height:48px; padding:11px 12px; border:1px solid var(--line); border-radius:4px; background:#11100f; color:var(--text); font-size:16px; }
+    .button { display:block; width:100%; border:1px solid #e1c6a2; border-radius:6px; min-height:52px; padding:12px 14px; background:linear-gradient(135deg,var(--action),#c99e71); color:var(--ink); font-weight:700; font-size:15px; cursor:pointer; text-align:center; text-decoration:none; }
+    .button:hover:not(:disabled) { background:var(--text); } .button:disabled { cursor:default; opacity:.65; } .quiet { background:transparent; color:var(--action); border-color:var(--line); margin-top:12px; }
+    .message { font-size:13px; color:var(--muted); margin:12px 0 0; overflow-wrap:anywhere; } .error { color:#eea08e; }
+    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
+    .details li { margin:0 0 14px; padding-left:24px; position:relative; } .details li::before { content:"✓"; position:absolute; left:0; color:var(--good); }
+    .honey { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
+    footer { max-width:1140px; padding:28px 32px; margin:auto; color:var(--muted); font-size:12px; } footer a { margin-left:16px; }
+    @media(max-width:760px) { .bar { min-height:56px; padding:12px 18px; } .brand img { width:150px; height:24px; } main { display:flex; flex-direction:column; padding:24px 18px; gap:20px; } .intro,.card,.details { width:100%; } h1 { font-size:38px; margin-bottom:12px; max-width:18ch; } .eyebrow { margin-bottom:10px; font-size:10px; } .lede { font-size:16px; } .card { padding:20px; } .price { font-size:28px; } .terms { margin-bottom:16px; } .details { padding-top:12px; font-size:14px; } footer { padding:20px 18px; } }
+    @media(max-width:420px) { main { padding-top:18px; gap:16px; } h1 { font-size:34px; } .lede { font-size:15px; } .card { padding:18px; } .field { margin-bottom:12px; } }
+
+    .launch { display:block; max-width:980px; padding-top:44px; }
+    .launch h1 { font-size:clamp(34px,5vw,54px); max-width:none; }
+    .launch .lede { max-width:60ch; } .launch-grid { display:grid; grid-template-columns:1.15fr 1fr; gap:28px; margin-top:28px; }
+    .steps { list-style:none; padding:0; margin:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .step { display:flex; gap:14px; padding:17px 18px; border-bottom:1px solid #35302c; }
+    .step:last-child { border-bottom:0; } .step strong { display:block; font-size:14px; font-weight:600; }
+    .step span { display:block; color:var(--muted); font-size:12px; } .step b { width:25px; flex:none; color:var(--muted); font-weight:500; }
+    .step.done b { color:var(--good); } .step.current { background:rgba(189,117,76,.08); } .step.current b { color:var(--brand); }
+    .facts { margin:0; background:var(--surface); border:1px solid var(--line); padding:22px; border-radius:8px; }
+    .facts div { padding:10px 0; border-top:1px solid #35302c; } .facts div:first-child { border:0; padding-top:0; }
+    dt { color:var(--muted); font-size:12px; } dd { margin:3px 0 0; font-size:14px; overflow-wrap:anywhere; }
+    .actions { margin-top:22px; max-width:460px; } .launch-message { color:var(--brand); min-height:24px; margin:14px 0; overflow-wrap:anywhere; }
+    @media(max-width:760px) { .launch { padding:24px 18px; } .launch-grid { display:flex; flex-direction:column; gap:18px; margin-top:22px; } .actions { max-width:none; } }
+  </style>
+</head>
+<body>
+  <header><div class="bar"><a class="brand" href="/" aria-label="Sneferu home"><img src="/assets/sneferu-logo-on-dark.svg" alt="Sneferu"></a><a class="home" href="mailto:mike@sneferu.ai">Get help ↗</a></div></header>
+  <main class="launch">
+    <p class="eyebrow" id="lvKicker">Your node</p>
+    <h1 id="lvTitle">Checking your order.</h1>
+    <p class="lede" id="lvLede">We’ll show the latest payment and launch status here.</p>
+    <p class="launch-message" id="lvMessage" role="status" aria-live="polite"></p>
+    <div class="actions">
+      <a class="button" id="lvOpen" href="#" hidden>Open my node ↗</a>
+      <p class="message" id="lvEmail" hidden></p>
+      <p class="message" id="lvConnection" role="status" aria-live="polite"></p>
+      <button class="button quiet" id="lvRetry" type="button" hidden>Check again</button>
+    </div>
+    <div class="launch-grid" id="lvDetails" hidden>
+      <ol class="steps" id="lvSteps" aria-label="Launch progress"></ol>
+      <div>
+        <dl class="facts">
+          <div><dt>Plan</dt><dd id="lvPlan"></dd></div>
+          <div><dt>Model usage</dt><dd id="lvUsage"></dd></div>
+          <div><dt>Founding rate</dt><dd id="lvHold"></dd></div>
+          <div><dt>Next charge</dt><dd id="lvNext"></dd></div>
+        </dl>
+        <button class="button quiet" id="lvPortal" type="button" hidden>Manage billing ↗</button>
+        <p class="message" id="lvBillingMessage" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+    <noscript>JavaScript is needed to show your order. Your purchase is preserved. Check your invitation email or contact us for help.</noscript>
+  </main>
+  <footer>Software On Demand · © 2026 Sneferu<a href="mailto:mike@sneferu.ai">Contact us</a></footer>
+  <script>
+    // Must match the offer page. No order token is sent to any other service.
+    const STORE_ORIGIN = "https://ebj2525d.clients.sneferu.ai";
+    (() => {
+      "use strict";
+      const API = STORE_ORIGIN + "/api/sod/node-offer";
+      const $ = id => document.getElementById(id);
+      const token = new URLSearchParams(location.search).get("o") || "";
+      const money = cents => (cents / 100).toLocaleString("en-US", {style:"currency",currency:"USD",minimumFractionDigits:cents % 100 ? 2 : 0});
+      let timer = null, polling = false, portalKey = null;
+      function safeUrl(value, host) {
+        try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password && (!host || u.hostname === host) ? u.href : ""; } catch (_) { return ""; }
+      }
+      async function request(method, url, body, headers = {}) {
+        const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 20000);
+        try {
+          const res = await fetch(url, {method,mode:"cors",credentials:"omit",cache:"no-store",referrerPolicy:"no-referrer",redirect:"error",signal:controller.signal,
+            headers:{Accept:"application/json",...(body === undefined ? {} : {"Content-Type":"application/json"}),...headers},body:body === undefined ? undefined : JSON.stringify(body)});
+          let data = null; try { data = await res.json(); } catch (_) {}
+          return {status:res.status,data};
+        } finally { clearTimeout(timer); }
+      }
+      function clearReady() { $("lvOpen").hidden = true; $("lvOpen").removeAttribute("href"); $("lvEmail").hidden = true; }
+      function receivedEmail(order) {
+        // The API deliberately never exposes buyer email. Only display the
+        // address saved in THIS browser for the exact returned order ID.
+        if (!order.order_id) return "";
+        const receipt = "sneferu.node-receipt." + STORE_ORIGIN + "." + order.order_id;
+        try {
+          const key = "sneferu.node-purchase." + STORE_ORIGIN;
+          const attempt = JSON.parse(sessionStorage.getItem(key) || "null");
+          if (order.state !== "open" && attempt && attempt.order_id === order.order_id && typeof attempt.email === "string") {
+            sessionStorage.setItem(receipt, attempt.email); sessionStorage.removeItem(key);
+          }
+          return sessionStorage.getItem(receipt) || "";
+        } catch (_) { return ""; }
+      }
+      function paint(order) {
+        clearReady(); $("lvRetry").hidden = true; $("lvConnection").textContent = "";
+        $("lvDetails").hidden = false;
+        const state = order.state, ready = state === "ready" || state === "past_due";
+        const email = receivedEmail(order);
+        $("lvMessage").textContent = order.message || "";
+        if (state === "open") {
+          $("lvKicker").textContent = "Checking your payment"; $("lvTitle").textContent = "Waiting for payment confirmation.";
+          $("lvLede").textContent = "We are checking with Stripe. This page updates every few seconds; there’s no need to pay again.";
+        } else if (ready) {
+          $("lvKicker").textContent = "Node ready"; $("lvTitle").textContent = "Your node is ready.";
+          $("lvLede").textContent = "Your own space to build. Start with the first thing you want to make.";
+          const url = safeUrl(order.open_url);
+          if (url) {
+            $("lvOpen").href = url; $("lvOpen").hidden = false;
+            $("lvEmail").textContent = email ? "We emailed your sign-in invitation to " + email + "." : "We emailed your sign-in invitation to the address you used at checkout.";
+            $("lvEmail").hidden = false;
+          } else { $("lvMessage").textContent = "Your node is ready; we’re checking its address. Please keep this page open."; }
+          if (state === "past_due") $("lvMessage").textContent = "Your last renewal needs attention. Update your card under Manage billing; your node keeps running during the grace period.";
+        } else if (["stopped","lapsed","removed"].includes(state)) {
+          $("lvKicker").textContent = state === "removed" ? "Node removed" : "Node paused";
+          $("lvTitle").textContent = state === "removed" ? "Your node has been removed." : "Your node is paused.";
+          $("lvLede").textContent = state === "lapsed" ? "Your subscription has ended. Manage billing below, or contact us for help." : "The latest update is shown below. Contact us if you need help continuing.";
+        } else {
+          $("lvKicker").textContent = "Payment received"; $("lvTitle").textContent = "Your node is on its way.";
+          $("lvLede").textContent = "Payment received — building your node. This usually takes 20–30 minutes. We’ll email your invitation when it is ready.";
+        }
+        const list = $("lvSteps"); list.replaceChildren();
+        order.steps.forEach((title, index) => {
+          const done = ready || index + 1 < order.step, current = !done && index + 1 === order.step;
+          const li = document.createElement("li"); li.className = "step" + (done ? " done" : current ? " current" : "");
+          const mark = document.createElement("b"); mark.textContent = done ? "✓" : String(index + 1); mark.setAttribute("aria-hidden","true");
+          const text = document.createElement("div"), name = document.createElement("strong"), status = document.createElement("span");
+          name.textContent = title; status.textContent = done ? "Done" : current ? (order.status === "waiting" ? "Waiting" : "In progress") : "Waiting";
+          if (current) li.setAttribute("aria-current","step");
+          text.append(name,status); li.append(mark,text); list.append(li);
+        });
+        const terms = order.offer;
+        $("lvPlan").textContent = money(terms.monthly_cents) + " / month";
+        $("lvUsage").textContent = order.usage_month_cents != null && Number.isFinite(order.usage_month_cents) ? money(order.usage_month_cents) + " this period" : "At cost + " + terms.markup_percent + "%";
+        $("lvHold").textContent = terms.hold_months ? terms.hold_months + " months" : "No rate hold";
+        $("lvNext").textContent = Number.isFinite(order.period_end) && order.period_end > 0 ? new Date(order.period_end * 1000).toLocaleDateString() : "To be confirmed";
+        $("lvPortal").hidden = state === "open";
+        return ready && !!safeUrl(order.open_url);
+      }
+      function validOrder(o) {
+        return o && ["open","paid","launching","ready","past_due","lapsed","stopped","removed"].includes(o.state)
+          && Array.isArray(o.steps) && o.steps.length <= 10 && o.steps.every(s => typeof s === "string")
+          && Number.isInteger(o.step) && o.step >= 0 && o.step <= o.steps.length
+          && o.offer && Number.isSafeInteger(o.offer.monthly_cents) && o.offer.monthly_cents > 0
+          && Number.isInteger(o.offer.markup_percent) && Number.isInteger(o.offer.hold_months)
+          && (o.message == null || typeof o.message === "string");
+      }
+      function again(ms = 5000) { clearTimeout(timer); timer = setTimeout(poll, ms); }
+      function lost(text, delay = 5000) { $("lvConnection").textContent = text; $("lvRetry").hidden = false; again(delay); }
+      async function poll() {
+        if (polling) return;
+        clearTimeout(timer); polling = true; $("lvRetry").disabled = true;
+        try {
+          const res = await request("GET", API + "/orders/" + token);
+          if (res.status === 404) {
+            clearReady(); $("lvDetails").hidden = true; $("lvKicker").textContent = "Check your link";
+            $("lvTitle").textContent = "We couldn’t find that order.";
+            $("lvLede").textContent = "Your link may be incomplete, or order status may be temporarily unavailable. Check the original link or contact us. Don’t purchase again to recover an existing order.";
+            $("lvMessage").textContent = ""; $("lvConnection").textContent = ""; $("lvRetry").hidden = false; return;
+          }
+          if (res.status === 429) { lost("Checking less often. We’ll try again in a minute.",60000); return; }
+          if (res.status !== 200 || !validOrder(res.data)) { lost("The latest update is unavailable. Your order is preserved; we’ll check again shortly."); return; }
+          const finished = paint(res.data);
+          if (!finished && !["lapsed","stopped","removed"].includes(res.data.state)) again();
+        } catch (_) { lost("The connection was interrupted. Your order is preserved; we’ll check again shortly."); }
+        finally { polling = false; $("lvRetry").disabled = false; }
+      }
+      $("lvRetry").addEventListener("click", poll);
+      $("lvPortal").addEventListener("click", async () => {
+        $("lvPortal").disabled = true; $("lvBillingMessage").textContent = "Opening billing…";
+        portalKey = portalKey || "portal-" + crypto.randomUUID();
+        try {
+          const res = await request("POST", API + "/orders/" + token + "/portal", {key:portalKey});
+          const url = res.data && safeUrl(res.data.portal_url,"billing.stripe.com");
+          if (res.status === 200 && url) { location.assign(url); return; }
+          $("lvBillingMessage").textContent = res.status === 429 ? "Please try again in a minute." : "Billing can’t be opened right now. Please try again shortly.";
+        } catch (_) { $("lvBillingMessage").textContent = "The connection was interrupted. Please try again shortly."; }
+        finally { $("lvPortal").disabled = false; }
+      });
+      if (!/^[0-9a-f]{40}$/.test(token)) {
+        $("lvTitle").textContent = "This order link is incomplete.";
+        $("lvLede").textContent = "Use the complete link from checkout, or contact us for help. Don’t purchase again to recover an existing order.";
+        return;
+      }
+      poll();
+    })();
+  </script>
+</body>
+</html>
