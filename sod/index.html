@@ -73,7 +73,7 @@
       const $ = id => document.getElementById(id);
       const money = cents => (cents / 100).toLocaleString("en-US", {style:"currency",currency:"USD",minimumFractionDigits:cents % 100 ? 2 : 0});
       const nonce = () => crypto.randomUUID();
-      let offer = null, busy = false, attempt = null;
+      let offer = null, busy = false, attempt = null, resumeSaved = false;
       try { attempt = JSON.parse(sessionStorage.getItem(ATTEMPT) || "null"); } catch (_) {}
       if (attempt && typeof attempt.name === "string" && typeof attempt.email === "string" && typeof attempt.key === "string") {
         $("name").value = attempt.name; $("email").value = attempt.email;
@@ -92,23 +92,36 @@
           return {status:res.status,data};
         } finally { clearTimeout(timer); }
       }
-      function closed(text) {
+      function savedBuyerMatches() {
+        return resumeSaved && attempt && attempt.name === $("name").value.trim().replace(/\s+/g, " ")
+          && attempt.email === $("email").value.trim().toLowerCase();
+      }
+      function updateAvailability() { $("launchBtn").disabled = busy || (!offer && !savedBuyerMatches()); }
+      $("name").addEventListener("input", updateAvailability);
+      $("email").addEventListener("input", updateAvailability);
+      function closed(text, allowSavedRetry = false) {
         offer = null; $("launchBtn").disabled = true; $("launchBtn").textContent = "Nodes are not on offer right now";
+        resumeSaved = allowSavedRetry && !!attempt;
         $("priceMonthly").textContent = "Check back soon"; $("monthlyUnit").hidden = true;
         $("offerTerms").textContent = "We’ll show the current price here when nodes are available.";
         $("retryOffer").hidden = false; $("termsLink").hidden = true; message(text, true);
+        if (resumeSaved) {
+          $("launchBtn").textContent = "Resume saved checkout";
+          message("New purchases are unavailable. You can retry your saved checkout with its original name and email; the service will confirm the original order.");
+          updateAvailability();
+        }
       }
       async function loadOffer() {
         $("retryOffer").disabled = true;
         try {
           const res = await request("GET", API), o = res.data;
           if (res.status !== 200 || !o || o.enabled !== true) {
-            closed(res.status === 429 ? "Please try again in a minute." : "Nodes are not on offer right now. Please check back soon."); return;
+            closed(res.status === 429 ? "Please try again in a minute." : "Nodes are not on offer right now. Please check back soon.", res.status !== 429); return;
           }
           if (!Number.isSafeInteger(o.monthly_cents) || o.monthly_cents <= 0 || !Number.isInteger(o.markup_percent) || o.markup_percent < 0 || !Number.isInteger(o.hold_months) || o.hold_months < 0) {
             closed("The current price could not be confirmed. Please check again shortly."); return;
           }
-          offer = o; $("priceMonthly").textContent = money(o.monthly_cents); $("monthlyUnit").hidden = false;
+          offer = o; resumeSaved = false; $("priceMonthly").textContent = money(o.monthly_cents); $("monthlyUnit").hidden = false;
           $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Founding rate held " + o.hold_months + " months." : "No founding-rate hold.");
           $("launchBtn").textContent = "Launch your node — " + money(o.monthly_cents) + "/month";
           $("launchBtn").disabled = false; $("retryOffer").hidden = true;
@@ -121,7 +134,7 @@
       $("retryOffer").addEventListener("click", loadOffer);
       $("launchForm").addEventListener("submit", async event => {
         event.preventDefault();
-        if (busy || !offer || !$("launchForm").reportValidity()) return;
+        if (busy || (!offer && !savedBuyerMatches()) || !$("launchForm").reportValidity()) return;
         const name = $("name").value.trim().replace(/\s+/g, " "), email = $("email").value.trim().toLowerCase();
         if (!name) { message("Tell us your name.", true); $("name").focus(); return; }
         // Persist BEFORE sending. A lost reply, retry or reload must name the
@@ -139,14 +152,14 @@
             message("Taking you to Stripe…"); location.assign(checkout); return;
           }
           if (res.status === 201 && res.data && res.data.status === "subscribed") {
-            offer = null; message("This checkout is already complete. Use your node invitation email to sign in."); return;
+            offer = null; resumeSaved = false; message("This checkout is already complete. Use your node invitation email to sign in."); return;
           }
           if (res.status === 429) message("Please try again in a minute. Your checkout request is saved.", true);
           else if (res.status === 503 || res.status === 404) closed("Nodes are not on offer right now. Your checkout request is saved; please check again soon.");
           else if (res.status === 202) message("Your checkout is being checked. Try again shortly; the same request finds it.");
           else message(res.data && typeof res.data.detail === "string" ? res.data.detail : "Checkout couldn’t be opened. Try again; we’ll reuse the same request.", true);
         } catch (_) { message("The connection was interrupted. Try again; we’ll reuse the same checkout request.", true); }
-        finally { busy = false; $("launchBtn").disabled = !offer; }
+        finally { busy = false; updateAvailability(); }
       });
       loadOffer();
     })();

@@ -162,6 +162,29 @@ def test_lost_checkout_response_reload_reuses_same_request(page):
     assert all("cookie" not in r.headers and "referer" not in r.headers for r in state["requests"])
 
 
+@pytest.mark.parametrize("status,offer", [(200, {**OFFER, "enabled": False}), (503, {})])
+def test_closed_offer_resumes_only_the_saved_purchase(page, status, offer):
+    state = serve(page, offer=offer, offer_status=status,
+                  post_answers=[(202, {"detail": "Pending"})])
+    saved = {"name": "Ada Lovelace", "email": "ada@example.test", "key": "original-purchase"}
+    page.add_init_script("sessionStorage.setItem(" + json.dumps(ATTEMPT) + "," + json.dumps(json.dumps(saved)) + ")")
+    page.goto(SITE + "/sod/?left=1")
+    expect(page.locator("#launchBtn")).to_be_enabled()
+    expect(page.locator("#launchBtn")).to_have_text("Resume saved checkout")
+    # Changing the buyer cannot turn a saved retry into an unoffered purchase.
+    page.locator("#email").fill("different@example.test")
+    expect(page.locator("#launchBtn")).to_be_disabled()
+    page.locator("#launchForm").evaluate("el => el.dispatchEvent(new Event('submit',{cancelable:true}))")
+    assert not state["posts"]
+    page.locator("#email").fill(saved["email"])
+    page.locator("#launchBtn").click()
+    expect(page.locator("#launchMsg")).to_contain_text("being checked")
+    assert len(state["posts"]) == 1
+    assert state["posts"][0].headers["idempotency-key"] == saved["key"]
+    assert state["posts"][0].post_data_json["email"] == saved["email"]
+    no_overflow(page)
+
+
 @pytest.mark.parametrize("status", [429, 503, 202])
 def test_server_retry_keeps_checkout_identity(page, status):
     state = serve(page, post_answers=[(status,{"detail":"Retry"}), (202,{"detail":"Pending"})])

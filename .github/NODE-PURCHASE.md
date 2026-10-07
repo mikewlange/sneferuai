@@ -24,8 +24,12 @@ activation; no backend configuration is changed by this website commit.
    A push to this repository's `main` publishes through GitHub Pages.
 
 The backend can leave the offer disabled throughout preparation. The page
-disables checkout when the offer is off, missing or unavailable. Existing
-buyers can still open their order and billing when new sales are closed.
+disables new purchases when the offer is off, missing or unavailable. A saved
+attempt in this tab can use **Resume saved checkout** with its original name
+and email; the backend confirms the existing order and its original terms.
+Changing the buyer disables that closed-offer retry. No new request identity is
+created while sales are closed. Existing buyers can also open their order and
+billing when new sales are closed.
 
 ## Important behavior
 
@@ -63,3 +67,16 @@ Browser checks use local API, payment and launcher fixtures; all requests are
 intercepted. They prove the shipped pages, responsive layout, retries and
 navigation in Chromium/WebKit. They do not prove live payment, cloud capacity,
 email receipt, physical-phone behavior or the private node's first login.
+
+## October 7 final review follow-through
+
+The backend already admitted existing purchase retries after sales closed, but
+the website disabled their button. The new browser reproduction failed in both
+Chromium and WebKit before the fix (four cases: a closed offer and a 503 in each
+engine). It now passes without changing existing assertions. It also proves
+that changing the buyer cannot submit a new purchase and that restoring the
+original buyer reuses the exact request key after a lost reply.
+
+Verification on this change: 60 purchase browser checks; main/V2 Python and
+motion checks; public artifact build and validation (267 files). All local,
+with payment/cloud/API fixtures. No push, publication or real payment.
