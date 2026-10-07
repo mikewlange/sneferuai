@@ -77,6 +77,7 @@ engine). It now passes without changing existing assertions. It also proves
 that changing the buyer cannot submit a new purchase and that restoring the
 original buyer reuses the exact request key after a lost reply.
 
-Verification on this change: 60 purchase browser checks; main/V2 Python and
+The final pass also covers the backend’s actual closed-offer HTTP 404 response.
+Verification on this change: 62 purchase browser checks; main/V2 Python and
 motion checks; public artifact build and validation (267 files). All local,
 with payment/cloud/API fixtures. No push, publication or real payment.

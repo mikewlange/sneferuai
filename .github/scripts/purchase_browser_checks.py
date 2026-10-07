@@ -162,7 +162,7 @@ def test_lost_checkout_response_reload_reuses_same_request(page):
     assert all("cookie" not in r.headers and "referer" not in r.headers for r in state["requests"])
 
 
-@pytest.mark.parametrize("status,offer", [(200, {**OFFER, "enabled": False}), (503, {})])
+@pytest.mark.parametrize("status,offer", [(200, {**OFFER, "enabled": False}), (404, {}), (503, {})])
 def test_closed_offer_resumes_only_the_saved_purchase(page, status, offer):
     state = serve(page, offer=offer, offer_status=status,
                   post_answers=[(202, {"detail": "Pending"})])
