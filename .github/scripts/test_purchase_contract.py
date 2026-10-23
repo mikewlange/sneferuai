@@ -6,7 +6,7 @@ from unittest import TestCase
 from test_site import Elements
 
 ROOT = Path(__file__).resolve().parents[2]
-PAGES = ("sod/index.html", "sod/launching/index.html")
+PAGES = ("sod/signup/index.html", "sod/launching/index.html")
 
 
 class PurchaseContractTests(TestCase):

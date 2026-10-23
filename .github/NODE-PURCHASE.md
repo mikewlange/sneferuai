@@ -1,8 +1,11 @@
 # Public-site node purchase
 
-The offer at `/sod/` and status page at `/sod/launching/?o=<token>` use the
+The scrolling sales page remains at `/sod/`. Its **Join Now** links open
+the offer at `/sod/signup/`; **Contact** retains the existing on-page form.
+The offer and status page at `/sod/launching/?o=<token>` use the
 existing guest node-order API. The browser goes to Stripe for payment and
-returns to sneferu.ai; it never navigates to the storefront's own signup page.
+returns to sneferu.ai. Existing cancel URLs at `/sod/?left=1` forward to
+`/sod/signup/?left=1` and retain the saved checkout attempt. It never navigates to the storefront's own signup page.
 
 ## Deployment settings and release order
 

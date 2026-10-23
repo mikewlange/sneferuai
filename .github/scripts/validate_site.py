@@ -14,7 +14,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import parse_qs, unquote, urlsplit
 
 
-ENTRY_PAGES = ("index.html", "system.html", "field-notes.html", "atlas-preview.html", "sod/index.html", "sod/launching/index.html")
+ENTRY_PAGES = ("index.html", "system.html", "field-notes.html", "atlas-preview.html", "sod/index.html", "sod/signup/index.html", "sod/launching/index.html")
 REQUIRED_PATHS = ENTRY_PAGES + ("CNAME", ".nojekyll", "research")
 FORBIDDEN_PATHS = (
     "atlas.html",
@@ -368,10 +368,10 @@ def validate(root: Path) -> list[str]:
         elif "required" in fields["company_or_fund"]:
             errors.append("company or fund must remain optional")
 
-    sod = documents.get((root / "sod/index.html").resolve())
+    sod = documents.get((root / "sod/signup/index.html").resolve())
     if sod is not None:
         if len(sod.forms) != 1:
-            errors.append(f"sod/index.html must contain one node purchase form; found {len(sod.forms)}")
+            errors.append(f"sod/signup/index.html must contain one node purchase form; found {len(sod.forms)}")
         else:
             form = sod.forms[0]
             if form.get("action") or form.get("id") != "launchForm":

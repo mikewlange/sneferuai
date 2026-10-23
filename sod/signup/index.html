@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Your own Sneferu instance, running around the clock. Launch a private node for continuous software development.">
+  <title>Launch a node — Sneferu Software On Demand</title>
+  <link rel="canonical" href="https://sneferu.ai/sod/signup/">
+  <style>
+    :root { color-scheme:dark; --canvas:#0d0c0c; --surface:#151413; --line:#4a433d; --text:#f2ede4; --muted:#aaa298; --brand:#e2ad84; --action:#d7bd99; --ink:#28170e; --good:#6fb58d; --serif:"Iowan Old Style",Palatino,Georgia,serif; --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; } [hidden] { display:none!important; }
+    body { margin:0; background:radial-gradient(circle at 15% 0,rgba(189,117,76,.13),transparent 36rem),var(--canvas); color:var(--text); font:16px/1.5 var(--sans); }
+    a { color:var(--action); } button,input { font:inherit; } button,a,input { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:2px solid var(--brand); outline-offset:4px; }
+    header { border-bottom:1px solid #35302c; } .bar { max-width:1140px; min-height:76px; margin:auto; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand img { display:block; width:190px; max-width:100%; height:28px; } .home { font-size:13px; text-decoration:none; }
+    main { max-width:1140px; margin:auto; padding:70px 32px 48px; display:grid; grid-template-columns:1.1fr 1fr; gap:28px 64px; align-items:start; }
+    .intro { grid-column:1; } .eyebrow { color:var(--brand); text-transform:uppercase; font-size:11px; font-weight:600; letter-spacing:.16em; margin:0 0 14px; }
+    h1 { font:500 clamp(38px,5vw,65px)/1.04 var(--serif); letter-spacing:-.025em; margin:0 0 24px; }
+    .lede { color:var(--muted); font-size:18px; margin:0; max-width:42ch; }
+    .card { grid-column:2; grid-row:1 / span 2; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:28px; min-width:0; }
+    .price { font-size:32px; font-weight:600; margin:0; } .price small { font-size:15px; color:var(--muted); font-weight:400; }
+    .terms { color:var(--muted); font-size:13px; margin:5px 0 20px; } label { display:block; font-size:13px; margin-bottom:5px; }
+    .field { margin:0 0 15px; } input { width:100%; min-height:48px; padding:11px 12px; border:1px solid var(--line); border-radius:4px; background:#11100f; color:var(--text); font-size:16px; }
+    .button { display:block; width:100%; border:1px solid #e1c6a2; border-radius:6px; min-height:52px; padding:12px 14px; background:linear-gradient(135deg,var(--action),#c99e71); color:var(--ink); font-weight:700; font-size:15px; cursor:pointer; text-align:center; text-decoration:none; }
+    .button:hover:not(:disabled) { background:var(--text); } .button:disabled { cursor:default; opacity:.65; } .quiet { background:transparent; color:var(--action); border-color:var(--line); margin-top:12px; }
+    .message { font-size:13px; color:var(--muted); margin:12px 0 0; overflow-wrap:anywhere; } .error { color:#eea08e; }
+    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
+    .details li { margin:0 0 14px; padding-left:24px; position:relative; } .details li::before { content:"✓"; position:absolute; left:0; color:var(--good); }
+    .honey { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
+    footer { max-width:1140px; padding:28px 32px; margin:auto; color:var(--muted); font-size:12px; } footer a { margin-left:16px; }
+    @media(max-width:760px) { .bar { min-height:56px; padding:12px 18px; } .brand img { width:150px; height:24px; } main { display:flex; flex-direction:column; padding:24px 18px; gap:20px; } .intro,.card,.details { width:100%; } h1 { font-size:38px; margin-bottom:12px; max-width:18ch; } .eyebrow { margin-bottom:10px; font-size:10px; } .lede { font-size:16px; } .card { padding:20px; } .price { font-size:28px; } .terms { margin-bottom:16px; } .details { padding-top:12px; font-size:14px; } footer { padding:20px 18px; } }
+    @media(max-width:420px) { main { padding-top:18px; gap:16px; } h1 { font-size:34px; } .lede { font-size:15px; } .card { padding:18px; } .field { margin-bottom:12px; } }
+  </style>
+</head>
+<body>
+  <header><div class="bar"><a class="brand" href="/" aria-label="Sneferu home"><img src="/assets/sneferu-logo-on-dark.svg" alt="Sneferu"></a><a class="home" href="/sod/">About Software On Demand ↗</a></div></header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Software On Demand · Live beta</p>
+      <h1>Launch a node.<br>Wake up to working software.</h1>
+      <p class="lede">Your own Sneferu instance, running around the clock. From a few words to working software.</p>
+    </section>
+    <form class="card" id="launchForm" novalidate aria-label="Launch your node">
+      <p class="eyebrow">Your private node</p>
+      <p class="price"><span id="priceMonthly">Checking availability…</span><small id="monthlyUnit" hidden> / month</small></p>
+      <p class="terms" id="offerTerms">Getting the current price and terms.</p>
+      <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
+      <div class="field"><label for="email">Email for your invitation</label><input id="email" name="email" type="email" autocomplete="email" maxlength="320" required></div>
+      <div class="field"><label for="promotion">Promotion code (optional)</label><input id="promotion" name="promotion" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="100" pattern="[A-Za-z0-9]+" aria-describedby="promotionHelp"></div>
+      <p class="fine" id="promotionHelp">A promotion reduces only the monthly node fee. Stripe confirms the discount before you continue. Usage and any setup fee stay separate.</p>
+      <div class="honey" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+      <button class="button" id="launchBtn" type="submit" disabled>Checking availability…</button>
+      <p class="message" id="launchMsg" role="status" aria-live="polite"></p>
+      <button class="button quiet" id="retryOffer" type="button" hidden>Check availability again</button>
+      <p class="fine">Secure payment on Stripe. No account to create first. We email your invitation when your node is ready.</p>
+      <p class="fine">Monthly subscription. Cancel through Manage billing. Model usage is charged separately.<a id="termsLink" href="#" hidden> Terms</a></p>
+    </form>
+    <ul class="details">
+      <li>A private machine with its own address. Unlimited projects, one build at a time.</li>
+      <li>Work with rival AI models that write the specification, build, and check each other’s work.</li>
+      <li>Review the running preview and take the source. Every release is yours.</li>
+    </ul>
+    <noscript>JavaScript is needed to check the current offer and open secure checkout. No payment has been started.</noscript>
+  </main>
+  <footer>Software On Demand · © 2026 Sneferu<a href="mailto:mike@sneferu.ai">Contact us</a></footer>
+  <script>
+    // The only deployment setting. This backend stays out of the buyer's address bar.
+    const STORE_ORIGIN = "https://sod.sneferu.ai";
+    (() => {
+      "use strict";
+      const API = STORE_ORIGIN + "/api/sod/node-offer";
+      const ATTEMPT = "sneferu.node-purchase." + STORE_ORIGIN;
+      const $ = id => document.getElementById(id);
+      const money = cents => (cents / 100).toLocaleString("en-US", {style:"currency",currency:"USD",minimumFractionDigits:cents % 100 ? 2 : 0});
+      const nonce = () => crypto.randomUUID();
+      let offer = null, busy = false, attempt = null, resumeSaved = false;
+      try { attempt = JSON.parse(sessionStorage.getItem(ATTEMPT) || "null"); } catch (_) {}
+      if (attempt && typeof attempt.name === "string" && typeof attempt.email === "string" && typeof attempt.key === "string") {
+        $("name").value = attempt.name; $("email").value = attempt.email;
+        $("promotion").value = typeof attempt.promotion_code === "string" ? attempt.promotion_code : "";
+      } else { attempt = null; }
+      const left = new URLSearchParams(location.search).get("left") === "1";
+      function message(text, error = false) { $("launchMsg").textContent = text; $("launchMsg").classList.toggle("error", error); }
+      function safeUrl(value, host) {
+        try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password && (!host || u.hostname === host) ? u.href : ""; } catch (_) { return ""; }
+      }
+      async function request(method, url, body, headers = {}) {
+        const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 20000);
+        try {
+          const res = await fetch(url, {method,mode:"cors",credentials:"omit",cache:"no-store",referrerPolicy:"no-referrer",redirect:"error",signal:controller.signal,
+            headers:{Accept:"application/json",...(body === undefined ? {} : {"Content-Type":"application/json"}),...headers},body:body === undefined ? undefined : JSON.stringify(body)});
+          let data = null; try { data = await res.json(); } catch (_) {}
+          return {status:res.status,data};
+        } finally { clearTimeout(timer); }
+      }
+      function savedBuyerMatches() {
+        return resumeSaved && attempt && attempt.name === $("name").value.trim().replace(/\s+/g, " ")
+          && attempt.email === $("email").value.trim().toLowerCase()
+          && (attempt.promotion_code || "") === $("promotion").value.trim().toUpperCase();
+      }
+      function updateAvailability() {
+        $("launchBtn").disabled = busy || (!offer && !savedBuyerMatches());
+        if (offer && !busy) $("launchBtn").textContent = $("promotion").value.trim() ? "Continue to Stripe" : "Launch your node — " + money(offer.monthly_cents) + "/month";
+      }
+      $("name").addEventListener("input", updateAvailability);
+      $("email").addEventListener("input", updateAvailability);
+      $("promotion").addEventListener("input", updateAvailability);
+      function closed(text, allowSavedRetry = false) {
+        offer = null; $("launchBtn").disabled = true; $("launchBtn").textContent = "Nodes are not on offer right now";
+        resumeSaved = allowSavedRetry && !!attempt;
+        $("priceMonthly").textContent = "Check back soon"; $("monthlyUnit").hidden = true;
+        $("offerTerms").textContent = "We’ll show the current price here when nodes are available.";
+        $("retryOffer").hidden = false; $("termsLink").hidden = true; message(text, true);
+        if (resumeSaved) {
+          $("launchBtn").textContent = "Resume saved checkout";
+          message("New purchases are unavailable. You can retry your saved checkout with its original name and email; the service will confirm the original order.");
+          updateAvailability();
+        }
+      }
+      async function loadOffer() {
+        $("retryOffer").disabled = true;
+        try {
+          const res = await request("GET", API), o = res.data;
+          if (res.status !== 200 || !o || o.enabled !== true) {
+            closed(res.status === 429 ? "Please try again in a minute." : "Nodes are not on offer right now. Please check back soon.", res.status !== 429); return;
+          }
+          if (!Number.isSafeInteger(o.monthly_cents) || o.monthly_cents <= 0 || !Number.isInteger(o.markup_percent) || o.markup_percent < 0 || !Number.isInteger(o.hold_months) || o.hold_months < 0) {
+            closed("The current price could not be confirmed. Please check again shortly."); return;
+          }
+          offer = o; resumeSaved = false; $("priceMonthly").textContent = money(o.monthly_cents); $("monthlyUnit").hidden = false;
+          $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Founding rate held " + o.hold_months + " months." : "No founding-rate hold.");
+          $("launchBtn").textContent = "Launch your node — " + money(o.monthly_cents) + "/month";
+          $("launchBtn").disabled = false; $("retryOffer").hidden = true;
+          updateAvailability();
+          const terms = safeUrl(o.terms_url);
+          if (terms) { $("termsLink").href = terms; $("termsLink").hidden = false; }
+          message(left ? "You left Checkout. Your place is kept; launch when ready." : "");
+        } catch (_) { closed("We couldn’t reach the service. Please check availability again."); }
+        finally { $("retryOffer").disabled = false; }
+      }
+      $("retryOffer").addEventListener("click", loadOffer);
+      $("launchForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        if (busy || (!offer && !savedBuyerMatches()) || !$("launchForm").reportValidity()) return;
+        const name = $("name").value.trim().replace(/\s+/g, " "), email = $("email").value.trim().toLowerCase();
+        const promotion = $("promotion").value.trim().toUpperCase();
+        if (!name) { message("Tell us your name.", true); $("name").focus(); return; }
+        // Persist BEFORE sending. A lost reply, retry or reload must name the
+        // same order, even if the first request already reached Stripe.
+        if (!attempt || attempt.name !== name || attempt.email !== email) attempt = {name,email,promotion_code:promotion,key:"node-order-" + nonce()};
+        try { sessionStorage.setItem(ATTEMPT, JSON.stringify(attempt)); }
+        catch (_) { message("Please allow browser storage for this page, then try again. It keeps retries tied to one checkout.", true); return; }
+        busy = true; $("launchBtn").disabled = true; message("Opening secure checkout…");
+        try {
+          // Editing an invalid code keeps the request key. If an order already
+          // exists the server retains its original discount and refuses a change.
+          const res = await request("POST", API + "/orders", {name,email,website:$("website").value,
+            ...(promotion || attempt.promotion_code ? {promotion_code:promotion} : {})}, {"Idempotency-Key":attempt.key});
+          const checkout = res.data && safeUrl(res.data.checkout_url, "checkout.stripe.com");
+          if (res.status === 201 && checkout) {
+            attempt.order_id = res.data.order_id;
+            attempt.promotion_code = promotion;
+            sessionStorage.setItem(ATTEMPT, JSON.stringify(attempt));
+            message("Taking you to Stripe…"); location.assign(checkout); return;
+          }
+          if (res.status === 201 && res.data && res.data.status === "subscribed") {
+            offer = null; resumeSaved = false; message("This checkout is already complete. Use your node invitation email to sign in."); return;
+          }
+          if (res.status === 429) message("Please try again in a minute. Your checkout request is saved.", true);
+          else if (res.status === 503 || res.status === 404) closed("Nodes are not on offer right now. Your checkout request is saved; please check again soon.");
+          else if (res.status === 202) message("Your checkout is being checked. Try again shortly; the same request finds it.");
+          else message(res.data && typeof res.data.detail === "string" ? res.data.detail : "Checkout couldn’t be opened. Try again; we’ll reuse the same request.", true);
+        } catch (_) { message("The connection was interrupted. Try again; we’ll reuse the same checkout request.", true); }
+        finally { busy = false; updateAvailability(); }
+      });
+      loadOffer();
+    })();
+  </script>
+</body>
+</html>

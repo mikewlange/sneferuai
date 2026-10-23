@@ -87,6 +87,9 @@ def serve(page, *, offer=OFFER, offer_status=200, orders=None, post_answers=None
             # configured success URL after the purchase click.
             target = SITE + "/sod/launching/?o=" + TOKEN + "&paid=1"
             route.fulfill(status=200, content_type="text/html", body="<script>location.replace(" + json.dumps(target) + ")</script>")
+        elif urlsplit(req.url).netloc in {"cdnjs.cloudflare.com", "fonts.googleapis.com", "fonts.gstatic.com"}:
+            # Exercise the sales page's existing static fallback without external requests.
+            route.fulfill(status=200, content_type="text/javascript" if req.resource_type == "script" else "text/css", body="")
         elif urlsplit(req.url).netloc == "sneferu.ai":
             path = urlsplit(req.url).path
             file = ROOT / path.lstrip("/")
@@ -116,7 +119,7 @@ def no_overflow(page):
 
 def test_offer_uses_live_terms_and_button_above_fold(page):
     serve(page, offer={**OFFER, "monthly_cents": 212350, "markup_percent": 17, "hold_months": 6})
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     expect(page.locator("#launchBtn")).to_be_enabled()
     expect(page.locator("#priceMonthly")).to_have_text("$2,123.50")
     expect(page.locator("#offerTerms")).to_contain_text("17%")
@@ -130,7 +133,7 @@ def test_offer_uses_live_terms_and_button_above_fold(page):
 @pytest.mark.parametrize("status,offer", [(404,{}), (503,{}), (429,{}), (200,{**OFFER,"enabled":False}), (200,{**OFFER,"monthly_cents":None})])
 def test_unavailable_or_invalid_offer_never_buys(page, status, offer):
     state = serve(page, offer=offer, offer_status=status)
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     expect(page.locator("#retryOffer")).to_be_visible()
     expect(page.locator("#launchBtn")).to_be_disabled()
     fill(page)
@@ -139,16 +142,45 @@ def test_unavailable_or_invalid_offer_never_buys(page, status, offer):
     no_overflow(page)
 
 
-def test_return_from_canceled_checkout_keeps_the_form(page):
+@pytest.mark.parametrize("path", ["/sod/signup/?left=1", "/sod/?left=1"])
+def test_return_from_canceled_checkout_keeps_the_form(page, path):
     serve(page)
-    page.goto(SITE + "/sod/?left=1")
+    saved = {"name": "Ada Lovelace", "email": "ada@example.test", "key": "node-order-preserved"}
+    page.add_init_script("sessionStorage.setItem(" + json.dumps(ATTEMPT) + "," + json.dumps(json.dumps(saved)) + ");")
+    page.goto(SITE + path)
+    page.wait_for_url(SITE + "/sod/signup/?left=1")
     expect(page.locator("#launchMsg")).to_have_text("You left Checkout. Your place is kept; launch when ready.")
     expect(page.locator("#launchBtn")).to_be_enabled()
+    expect(page.locator("#name")).to_have_value(saved["name"])
+    expect(page.locator("#email")).to_have_value(saved["email"])
+
+
+@pytest.mark.parametrize("viewport", [{"width": 1440, "height": 900}, {"width": 390, "height": 844}])
+def test_sales_page_keeps_contact_and_opens_separate_signup(page, viewport):
+    page.set_viewport_size(viewport)
+    page.emulate_media(reduced_motion="reduce")
+    state = serve(page)
+    page.goto(SITE + "/sod/")
+    expect(page.locator("#h1")).to_contain_text("What do you want to build?")
+    expect(page.locator("#launchForm")).to_have_count(0)
+    no_overflow(page)
+    page.locator("#close-cta").click()
+    expect(page.locator("#join")).to_be_visible()
+    expect(page.locator("#join-title")).to_have_text("Contact us")
+    page.keyboard.press("Escape")
+    expect(page.locator("#join")).not_to_be_visible()
+    assert state["requests"] == []
+    page.locator(".cta-row").get_by_role("link", name="Join Now", exact=True).click()
+    page.wait_for_url(SITE + "/sod/signup/")
+    expect(page.locator("#launchForm")).to_be_visible()
+    expect(page.locator("#launchBtn")).to_be_enabled()
+    assert state["posts"] == []
+    no_overflow(page)
 
 
 def test_lost_checkout_response_reload_reuses_same_request(page):
     state = serve(page, post_answers=[("abort",{}), (202,{"detail":"Pending"})])
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     fill(page)
     page.locator("#launchBtn").click()
     expect(page.locator("#launchMsg")).to_contain_text("connection was interrupted")
@@ -168,7 +200,7 @@ def test_closed_offer_resumes_only_the_saved_purchase(page, status, offer):
                   post_answers=[(202, {"detail": "Pending"})])
     saved = {"name": "Ada Lovelace", "email": "ada@example.test", "key": "original-purchase"}
     page.add_init_script("sessionStorage.setItem(" + json.dumps(ATTEMPT) + "," + json.dumps(json.dumps(saved)) + ")")
-    page.goto(SITE + "/sod/?left=1")
+    page.goto(SITE + "/sod/signup/?left=1")
     expect(page.locator("#launchBtn")).to_be_enabled()
     expect(page.locator("#launchBtn")).to_have_text("Resume saved checkout")
     # Changing the buyer cannot turn a saved retry into an unoffered purchase.
@@ -188,7 +220,7 @@ def test_closed_offer_resumes_only_the_saved_purchase(page, status, offer):
 @pytest.mark.parametrize("status", [429, 503, 202])
 def test_server_retry_keeps_checkout_identity(page, status):
     state = serve(page, post_answers=[(status,{"detail":"Retry"}), (202,{"detail":"Pending"})])
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     fill(page)
     page.locator("#launchBtn").click()
     expect(page.locator("#launchMsg")).not_to_have_text("Opening secure checkout…")
@@ -207,7 +239,7 @@ def test_checkout_paid_phases_ready_then_billing_without_backend_navigation(page
     state = serve(page, orders=[(200,order("paid")), (200,order(message="Registering your address",step=3,phase="dns")),
         (200,order("ready",message="Invitation sent",open_url="https://buyer.example/sod?from=receipt"))])
     page.clock.install()
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     fill(page)
     page.locator("#launchBtn").click()
     page.wait_for_url(SITE + "/sod/launching/**")
@@ -314,7 +346,7 @@ def test_script_strings_are_only_text(page):
 def test_both_pages_fit_viewport(page, width):
     page.set_viewport_size({"width":width,"height":900})
     serve(page, orders=[(200,order("ready",open_url="https://buyer.example/sod"))])
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     expect(page.locator("#launchBtn")).to_be_enabled()
     no_overflow(page)
     page.goto(SITE + "/sod/launching/?o=" + TOKEN)
@@ -325,7 +357,7 @@ def test_both_pages_fit_viewport(page, width):
 def test_promotion_code_retries_keep_one_purchase_identity(page):
     state = serve(page, post_answers=[(422, {"detail": "Promotion code unavailable"}),
                                       (202, {"detail": "Checking saved purchase"})])
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     page.locator("#name").fill("Ada Lovelace")
     page.locator("#email").fill("ada@example.test")
     page.locator("#promotion").fill("invalid")
@@ -343,7 +375,7 @@ def test_closed_offer_restores_saved_promotion_and_refuses_edited_terms(page):
     page.add_init_script("sessionStorage.setItem(" + json.dumps(ATTEMPT) + "," + json.dumps(json.dumps({
         "name": "Ada Lovelace", "email": "ada@example.test", "promotion_code": "LIFETIME", "key": "saved-key"})) + ")")
     state = serve(page, offer_status=404, post_answers=[(202, {})])
-    page.goto(SITE + "/sod/")
+    page.goto(SITE + "/sod/signup/")
     expect(page.locator("#promotion")).to_have_value("LIFETIME")
     expect(page.locator("#launchBtn")).to_be_enabled()
     page.locator("#promotion").fill("OTHER")
