@@ -48,6 +48,8 @@
       <p class="terms" id="offerTerms">Getting the current price and terms.</p>
       <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
       <div class="field"><label for="email">Email for your invitation</label><input id="email" name="email" type="email" autocomplete="email" maxlength="320" required></div>
+      <div class="field"><label for="promotion">Promotion code (optional)</label><input id="promotion" name="promotion" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="100" pattern="[A-Za-z0-9]+" aria-describedby="promotionHelp"></div>
+      <p class="fine" id="promotionHelp">A promotion reduces only the monthly node fee. Stripe confirms the discount before you continue. Usage and any setup fee stay separate.</p>
       <div class="honey" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <button class="button" id="launchBtn" type="submit" disabled>Checking availability…</button>
       <p class="message" id="launchMsg" role="status" aria-live="polite"></p>
@@ -77,6 +79,7 @@
       try { attempt = JSON.parse(sessionStorage.getItem(ATTEMPT) || "null"); } catch (_) {}
       if (attempt && typeof attempt.name === "string" && typeof attempt.email === "string" && typeof attempt.key === "string") {
         $("name").value = attempt.name; $("email").value = attempt.email;
+        $("promotion").value = typeof attempt.promotion_code === "string" ? attempt.promotion_code : "";
       } else { attempt = null; }
       const left = new URLSearchParams(location.search).get("left") === "1";
       function message(text, error = false) { $("launchMsg").textContent = text; $("launchMsg").classList.toggle("error", error); }
@@ -94,11 +97,16 @@
       }
       function savedBuyerMatches() {
         return resumeSaved && attempt && attempt.name === $("name").value.trim().replace(/\s+/g, " ")
-          && attempt.email === $("email").value.trim().toLowerCase();
+          && attempt.email === $("email").value.trim().toLowerCase()
+          && (attempt.promotion_code || "") === $("promotion").value.trim().toUpperCase();
       }
-      function updateAvailability() { $("launchBtn").disabled = busy || (!offer && !savedBuyerMatches()); }
+      function updateAvailability() {
+        $("launchBtn").disabled = busy || (!offer && !savedBuyerMatches());
+        if (offer && !busy) $("launchBtn").textContent = $("promotion").value.trim() ? "Continue to Stripe" : "Launch your node — " + money(offer.monthly_cents) + "/month";
+      }
       $("name").addEventListener("input", updateAvailability);
       $("email").addEventListener("input", updateAvailability);
+      $("promotion").addEventListener("input", updateAvailability);
       function closed(text, allowSavedRetry = false) {
         offer = null; $("launchBtn").disabled = true; $("launchBtn").textContent = "Nodes are not on offer right now";
         resumeSaved = allowSavedRetry && !!attempt;
@@ -125,6 +133,7 @@
           $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Founding rate held " + o.hold_months + " months." : "No founding-rate hold.");
           $("launchBtn").textContent = "Launch your node — " + money(o.monthly_cents) + "/month";
           $("launchBtn").disabled = false; $("retryOffer").hidden = true;
+          updateAvailability();
           const terms = safeUrl(o.terms_url);
           if (terms) { $("termsLink").href = terms; $("termsLink").hidden = false; }
           message(left ? "You left Checkout. Your place is kept; launch when ready." : "");
@@ -136,18 +145,23 @@
         event.preventDefault();
         if (busy || (!offer && !savedBuyerMatches()) || !$("launchForm").reportValidity()) return;
         const name = $("name").value.trim().replace(/\s+/g, " "), email = $("email").value.trim().toLowerCase();
+        const promotion = $("promotion").value.trim().toUpperCase();
         if (!name) { message("Tell us your name.", true); $("name").focus(); return; }
         // Persist BEFORE sending. A lost reply, retry or reload must name the
         // same order, even if the first request already reached Stripe.
-        if (!attempt || attempt.name !== name || attempt.email !== email) attempt = {name,email,key:"node-order-" + nonce()};
+        if (!attempt || attempt.name !== name || attempt.email !== email) attempt = {name,email,promotion_code:promotion,key:"node-order-" + nonce()};
         try { sessionStorage.setItem(ATTEMPT, JSON.stringify(attempt)); }
         catch (_) { message("Please allow browser storage for this page, then try again. It keeps retries tied to one checkout.", true); return; }
         busy = true; $("launchBtn").disabled = true; message("Opening secure checkout…");
         try {
-          const res = await request("POST", API + "/orders", {name,email,website:$("website").value}, {"Idempotency-Key":attempt.key});
+          // Editing an invalid code keeps the request key. If an order already
+          // exists the server retains its original discount and refuses a change.
+          const res = await request("POST", API + "/orders", {name,email,website:$("website").value,
+            ...(promotion || attempt.promotion_code ? {promotion_code:promotion} : {})}, {"Idempotency-Key":attempt.key});
           const checkout = res.data && safeUrl(res.data.checkout_url, "checkout.stripe.com");
           if (res.status === 201 && checkout) {
             attempt.order_id = res.data.order_id;
+            attempt.promotion_code = promotion;
             sessionStorage.setItem(ATTEMPT, JSON.stringify(attempt));
             message("Taking you to Stripe…"); location.assign(checkout); return;
           }

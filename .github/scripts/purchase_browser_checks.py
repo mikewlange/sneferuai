@@ -320,3 +320,35 @@ def test_both_pages_fit_viewport(page, width):
     page.goto(SITE + "/sod/launching/?o=" + TOKEN)
     expect(page.locator("#lvOpen")).to_be_visible()
     no_overflow(page)
+
+
+def test_promotion_code_retries_keep_one_purchase_identity(page):
+    state = serve(page, post_answers=[(422, {"detail": "Promotion code unavailable"}),
+                                      (202, {"detail": "Checking saved purchase"})])
+    page.goto(SITE + "/sod/")
+    page.locator("#name").fill("Ada Lovelace")
+    page.locator("#email").fill("ada@example.test")
+    page.locator("#promotion").fill("invalid")
+    expect(page.locator("#launchBtn")).to_have_text("Continue to Stripe")
+    page.locator("#launchBtn").click()
+    expect(page.locator("#launchMsg")).to_have_text("Promotion code unavailable")
+    page.locator("#promotion").fill("lifetime")
+    page.locator("#launchBtn").click()
+    expect(page.locator("#launchMsg")).to_contain_text("being checked")
+    assert [r.post_data_json["promotion_code"] for r in state["posts"]] == ["INVALID", "LIFETIME"]
+    assert state["posts"][0].headers["idempotency-key"] == state["posts"][1].headers["idempotency-key"]
+
+
+def test_closed_offer_restores_saved_promotion_and_refuses_edited_terms(page):
+    page.add_init_script("sessionStorage.setItem(" + json.dumps(ATTEMPT) + "," + json.dumps(json.dumps({
+        "name": "Ada Lovelace", "email": "ada@example.test", "promotion_code": "LIFETIME", "key": "saved-key"})) + ")")
+    state = serve(page, offer_status=404, post_answers=[(202, {})])
+    page.goto(SITE + "/sod/")
+    expect(page.locator("#promotion")).to_have_value("LIFETIME")
+    expect(page.locator("#launchBtn")).to_be_enabled()
+    page.locator("#promotion").fill("OTHER")
+    expect(page.locator("#launchBtn")).to_be_disabled()
+    page.locator("#promotion").fill("lifetime")
+    page.locator("#launchBtn").click()
+    expect(page.locator("#launchMsg")).to_contain_text("being checked")
+    assert state["posts"][0].post_data_json["promotion_code"] == "LIFETIME"
