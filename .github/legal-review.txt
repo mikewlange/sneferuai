@@ -1,0 +1,89 @@
+SOD TERMS AND PRIVACY — LOCAL REVIEW COPY
+Prepared October 23, 2026.
+
+SCOPE
+privacy/index.html and terms/index.html are complete proposed pages for the
+Sneferu website and private Software On Demand signup. They are marked as
+review copies, noindex/nofollow, and not yet effective. The signup form and
+footer have permanent links independent of the offer API's optional terms_url.
+No purchase consent record, checkbox, API change, or billing change is claimed.
+The scrolling sales page, Contact flow, and checkout JavaScript are unchanged.
+
+COMPANY DECISION REQUESTED
+Confirm these proposed commitments before adopting/publishing them:
+- No training or fine-tuning Sneferu's own models on private project content
+  without separate opt-in.
+- No sale of personal information or sharing for cross-context advertising.
+These facts were not established by a source-code review or the prior
+Public Works policy draft. The owner was asked in this conversation.
+
+OTHER ADOPTION NOTES
+The text is a proposed company agreement, not a certification of legal
+compliance. Confirm it matches actual operations, including receipt/handling
+of privacy and refund requests at mike@sneferu.ai. It does not invent a fixed
+retention period, provider training guarantee, data-residency promise, blanket
+no-refund rule, liability cap, arbitration clause, or governing-law selection.
+Assess any jurisdiction-specific notices or contractual additions needed for
+actual customers and processing before adopting the text.
+
+The exact live monthly price remains outside this change. Prices, tax, usage,
+cloud fees, and any premium follow the offer/order; promotions apply only to
+the monthly node fee. Private nodes have no per-build package charge. Test
+checkout is distinguished from live charging. No production price is changed.
+
+SOURCE BASIS
+Website source: main at 89286e77f50d893ce4a81142c47a21ffcda9ea1b.
+- sod/signup/index.html: name/email/promotion, sessionStorage recovery,
+  hosted Stripe checkout, dynamic pricing and separate optional offer terms.
+- sod/launching/index.html: order recovery and service progress.
+- index.html and sod/index.html: company name, Formspree contact form,
+  Google Fonts. GitHub Pages hosting is described in README.md/workflow.
+
+Installed application source inspected at c339eaf5d7788a72094447dd14db5781920f589f:
+- orchestrator/sod/accounts.py: identities, password hashes, sessions.
+- orchestrator/sod/rights.py: community vs owner-only capabilities.
+- orchestrator/sod/agent_oauth_store.py and research_data_binding.py:
+  authorized connections; revocation is not erasure of imported/returned data.
+- orchestrator/sod/store.py: project/upload deletion, not a universal account
+  deletion operation or a complete retention schedule.
+- orchestrator/sod/account_email.py: invitation and service-email records.
+- orchestrator/billing/node_offer.py, node_usage.py, stripe_adapter.py:
+  hosted checkout, subscription/order references, measured usage.
+- Native private-node template: billing disabled within purchased nodes,
+  configured AI providers include Fireworks AI and Baseten.
+
+Existing source-grounded draft consulted:
+claudopus/plugins/sneferu/public-works-directory/privacy-policy.html and
+privacy-policy-review.txt. That draft was not treated as adopted policy.
+Public Works community visibility is not represented as private-node access.
+
+PRIMARY GUIDANCE AND PROVIDER LINKS CONSULTED
+https://www.ftc.gov/business-guidance/privacy-security
+https://www.ftc.gov/business-guidance/resources/protecting-personal-information-guide-business
+https://oag.ca.gov/sites/all/files/agweb/pdfs/cybersecurity/making_your_privacy_practices_public.pdf
+https://cppa.ca.gov/regulations/pdf/ccpa_statute_eff_20260101.pdf
+https://stripe.com/privacy
+https://policies.google.com/privacy
+https://formspree.io/legal/privacy-policy/
+https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement
+These sources inform structure and links. They do not establish Sneferu's
+practices, universal legal applicability, or provider-specific contract terms.
+
+LOCAL VALIDATION
+Public artifact built with three explicit new public files (before tracking).
+All 19 existing Python site/purchase contract tests passed. Artifact validation
+passed for 271 files: links/anchors, IDs, CNAME, contact form, file limits,
+private exclusions, and preserved research deployment receipts.
+Terms and Privacy checked in the browser at desktop and 390x844. No horizontal
+overflow or broken logo. Section navigation, cross-links, Back to signup,
+and signup's separate Privacy tab checked. Signup fields remained blank;
+no checkout, payment, contact, or account form was submitted. Viewport reset.
+Localhost checkout availability is not production checkout acceptance.
+
+RELEASE STATUS
+No push or deployment in this change. The latest supplied AGENTS.md says
+Do NOT run git push. Follow the user's current authority before publication.
+After adoption, replace review banners/prepared dates with the effective date,
+remove noindex/nofollow on these two pages, recheck the changed artifact, then
+publish only under authorized release instructions and verify public URLs.
+Keep this review file excluded from the Pages artifact under .github/.

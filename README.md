@@ -21,6 +21,11 @@ and workflow files. It preserves the public `research/` archive, `CNAME`, and
   labeled as an archive rather than current operating status. It stays saved,
   but the new homepage and system page do not link to it.
 - `sod/index.html`: the existing Software On Demand product page, unchanged.
+- `sod/signup/index.html`: the node checkout form, with always-visible links to
+  the proposed Terms and Privacy pages.
+- `terms/index.html` and `privacy/index.html`: local review copies, not yet
+  effective. Adoption and source notes are in `.github/legal-review.txt`;
+  resolve those notes before publishing the policy change.
 - `atlas-preview.html` and `research/`: existing public reference material.
 - `v2/assets/`: shared V2 styles, scripts, logos, and media used by the new root
   pages and `/v2/`. CSS and JavaScript URLs include content-hash cache versions.

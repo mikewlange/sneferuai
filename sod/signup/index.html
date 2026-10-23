@@ -26,7 +26,7 @@
     .button { display:block; width:100%; border:1px solid #e1c6a2; border-radius:6px; min-height:52px; padding:12px 14px; background:linear-gradient(135deg,var(--action),#c99e71); color:var(--ink); font-weight:700; font-size:15px; cursor:pointer; text-align:center; text-decoration:none; }
     .button:hover:not(:disabled) { background:var(--text); } .button:disabled { cursor:default; opacity:.65; } .quiet { background:transparent; color:var(--action); border-color:var(--line); margin-top:12px; }
     .message { font-size:13px; color:var(--muted); margin:12px 0 0; overflow-wrap:anywhere; } .error { color:#eea08e; }
-    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
+    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .policy-links { font-size:13px; color:var(--muted); margin:16px 0; } .policy-links a { display:inline-block; padding:5px 0; text-underline-offset:3px; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
     .details li { margin:0 0 14px; padding-left:24px; position:relative; } .details li::before { content:"✓"; position:absolute; left:0; color:var(--good); }
     .honey { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
     footer { max-width:1140px; padding:28px 32px; margin:auto; color:var(--muted); font-size:12px; } footer a { margin-left:16px; }
@@ -46,6 +46,7 @@
       <p class="eyebrow">Your private node</p>
       <p class="price"><span id="priceMonthly">Loading checkout…</span><small id="monthlyUnit" hidden> / month</small></p>
       <p class="terms" id="offerTerms">Getting the current price and terms.</p>
+      <p class="policy-links">Review our <a href="/terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a> and <a href="/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> before continuing. Links open in a new tab.</p>
       <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
       <div class="field"><label for="email">Email for your invitation</label><input id="email" name="email" type="email" autocomplete="email" maxlength="320" required></div>
       <div class="field"><label for="promotion">Promotion code (optional)</label><input id="promotion" name="promotion" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="100" pattern="[A-Za-z0-9]+" aria-describedby="promotionHelp"></div>
@@ -55,7 +56,7 @@
       <p class="message" id="launchMsg" role="status" aria-live="polite"></p>
       <button class="button quiet" id="retryOffer" type="button" hidden>Retry checkout</button>
       <p class="fine">Secure payment on Stripe. No account to create first. We email your invitation when your node is ready.</p>
-      <p class="fine">Monthly subscription. Cancel through Manage billing. Model usage is charged separately.<a id="termsLink" href="#" hidden> Terms</a></p>
+      <p class="fine">Monthly subscription. Cancel through Manage billing. Model usage is charged separately.<a id="termsLink" href="#" hidden> Offer terms</a></p>
     </form>
     <ul class="details">
       <li>A private machine with its own address. Unlimited projects, one build at a time.</li>
@@ -64,7 +65,7 @@
     </ul>
     <noscript>JavaScript is needed to check the current offer and open secure checkout. No payment has been started.</noscript>
   </main>
-  <footer>Software On Demand · © 2026 Sneferu<a href="mailto:mike@sneferu.ai">Contact us</a></footer>
+  <footer>Software On Demand · © 2026 Sneferu<a href="/terms/">Terms &amp; Conditions</a><a href="/privacy/">Privacy Policy</a><a href="mailto:mike@sneferu.ai">Contact us</a></footer>
   <script>
     // The only deployment setting. This backend stays out of the buyer's address bar.
     const STORE_ORIGIN = "https://sod.sneferu.ai";
