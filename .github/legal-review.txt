@@ -9,13 +9,23 @@ footer have permanent links independent of the offer API's optional terms_url.
 No purchase consent record, checkbox, API change, or billing change is claimed.
 The scrolling sales page, Contact flow, and checkout JavaScript are unchanged.
 
-COMPANY DECISION REQUESTED
-Confirm these proposed commitments before adopting/publishing them:
-- No training or fine-tuning Sneferu's own models on private project content
-  without separate opt-in.
-- No sale of personal information or sharing for cross-context advertising.
-These facts were not established by a source-code review or the prior
-Public Works policy draft. The owner was asked in this conversation.
+COMPANY DECISIONS RECORDED — OCTOBER 23, 2026
+Mike expressly corrected the proposed opt-in-only training promise:
+"leave that off"; Distillery may use project material to train models.
+He then clarified: "PII wil not be used but other stuff mihgt."
+The specific corrections govern over the generic async choice "Yes-use both
+commitments." The revised Privacy and Terms therefore disclose possible use
+of non-PII material, including private project material, for Sneferu model
+training, fine-tuning, and evaluation. No opt-in-only promise remains.
+The no-sale/no-cross-context-advertising commitment remains accepted.
+
+PII exclusion is the owner's policy commitment, not proof of a working
+anonymization or training-data filter. No new training, corpus ingestion,
+personal-data processing, or Distillery implementation was performed.
+Before any training use, the actual data handling must meet this commitment
+and any applicable agreement or legal requirement. External provider terms
+remain separate; no universal provider retention/training promise is made.
+The company-choice question is answered; do not ask it again.
 
 OTHER ADOPTION NOTES
 The text is a proposed company agreement, not a certification of legal
@@ -69,7 +79,7 @@ https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-s
 These sources inform structure and links. They do not establish Sneferu's
 practices, universal legal applicability, or provider-specific contract terms.
 
-LOCAL VALIDATION
+INITIAL DRAFT VALIDATION (2a9fda5)
 Public artifact built with three explicit new public files (before tracking).
 All 19 existing Python site/purchase contract tests passed. Artifact validation
 passed for 271 files: links/anchors, IDs, CNAME, contact form, file limits,
@@ -79,6 +89,14 @@ overflow or broken logo. Section navigation, cross-links, Back to signup,
 and signup's separate Privacy tab checked. Signup fields remained blank;
 no checkout, payment, contact, or account form was submitted. Viewport reset.
 Localhost checkout availability is not production checkout acceptance.
+
+TRAINING-POLICY REVISION VALIDATION
+After the owner's correction, the 271-file public artifact was rebuilt and
+validated. Both pages were checked for the non-PII/Distillery disclosure and
+removal of the opt-in-only promise. The local browser preview was reloaded
+and the revised Privacy disclosure inspected. No runtime, checkout, or
+training-pipeline code changed; the already-passed runtime suites were not
+repeated for this wording change.
 
 RELEASE STATUS
 No push or deployment in this change. The latest supplied AGENTS.md says
