@@ -15,7 +15,7 @@ from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
 SITE = "https://sneferu.ai"
-STORE = "https://ebj2525d.clients.sneferu.ai"
+STORE = "https://sod.sneferu.ai"
 API = STORE + "/api/sod/node-offer"
 TOKEN = "a" * 40
 ATTEMPT = "sneferu.node-purchase." + STORE

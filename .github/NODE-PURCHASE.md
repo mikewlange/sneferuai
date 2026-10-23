@@ -6,9 +6,11 @@ returns to sneferu.ai; it never navigates to the storefront's own signup page.
 
 ## Deployment settings and release order
 
-`STORE_ORIGIN` is the single backend setting in each page. Both currently name
-Public Works as the storefront for the authorized launch. No backend
-configuration is changed by this website commit.
+`STORE_ORIGIN` is the single backend setting in each page. Both name
+`https://sod.sneferu.ai` as the production storefront. Public Works already has
+an active sandbox payment authority; it must keep that account, mode and
+ledger. SOD has no active billing ledger and can use the native production
+setup. No backend configuration is changed by this website commit.
 
 1. Deploy the matching claudopus backend with `node_offer.site_origin` support.
 2. In the storefront's Billing & plans, set Public site origin to
