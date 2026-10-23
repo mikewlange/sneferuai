@@ -384,9 +384,12 @@ def validate(root: Path) -> list[str]:
                 errors.append(f"node purchase form must require {name}")
         if "website" not in fields:
             errors.append("node purchase form must retain its honeypot")
-        extra = sorted(str(name) for name in fields if name not in {"name", "email", "website"})
+        promotion = fields.get("promotion")
+        if promotion is not None and ("required" in promotion or promotion.get("maxlength") != "100"):
+            errors.append("node promotion code must remain optional and limited to 100 characters")
+        extra = sorted(str(name) for name in fields if name not in {"name", "email", "website", "promotion"})
         if extra:
-            errors.append(f"node purchase form collects only name and email; found {', '.join(extra)}")
+            errors.append(f"node purchase form contains unexpected fields: {', '.join(extra)}")
 
     return errors
 
