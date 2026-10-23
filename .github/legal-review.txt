@@ -105,3 +105,13 @@ After adoption, replace review banners/prepared dates with the effective date,
 remove noindex/nofollow on these two pages, recheck the changed artifact, then
 publish only under authorized release instructions and verify public URLs.
 Keep this review file excluded from the Pages artifact under .github/.
+
+PUBLICATION PREPARATION — OCTOBER 23, 2026
+The company choices above are resolved by Mike’s direct review and corrections.
+His subsequent instructions to finish and publish the work are the release
+authority. The only public changes in this finalization are the effective date
+and removal of draft/noindex markings. No substantive term or privacy promise
+was added. Prior review-copy validation and release status above are historical.
+This release does not retroactively change an existing order, certify legal
+compliance, prove a training filter, or change payment or project runtime.
+Actual public deployment and URL verification are recorded separately.
