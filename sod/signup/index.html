@@ -26,7 +26,7 @@
     .button { display:block; width:100%; border:1px solid #e1c6a2; border-radius:6px; min-height:52px; padding:12px 14px; background:linear-gradient(135deg,var(--action),#c99e71); color:var(--ink); font-weight:700; font-size:15px; cursor:pointer; text-align:center; text-decoration:none; }
     .button:hover:not(:disabled) { background:var(--text); } .button:disabled { cursor:default; opacity:.65; } .quiet { background:transparent; color:var(--action); border-color:var(--line); margin-top:12px; }
     .message { font-size:13px; color:var(--muted); margin:12px 0 0; overflow-wrap:anywhere; } .error { color:#eea08e; }
-    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .policy-links { font-size:13px; color:var(--muted); margin:16px 0; } .policy-links a { display:inline-block; padding:5px 0; text-underline-offset:3px; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
+    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .policy-links { font-size:13px; color:var(--muted); margin:8px 0; } .policy-links a { display:inline-block; padding:5px 0; text-underline-offset:3px; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
     .details li { margin:0 0 14px; padding-left:24px; position:relative; } .details li::before { content:"✓"; position:absolute; left:0; color:var(--good); }
     .honey { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
     footer { max-width:1140px; padding:28px 32px; margin:auto; color:var(--muted); font-size:12px; } footer a { margin-left:16px; }
@@ -46,7 +46,7 @@
       <p class="eyebrow">Your private node</p>
       <p class="price"><span id="priceMonthly">Loading checkout…</span><small id="monthlyUnit" hidden> / month</small></p>
       <p class="terms" id="offerTerms">Getting the current price and terms.</p>
-      <p class="policy-links">Review our <a href="/terms/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a> and <a href="/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a> before continuing. Links open in a new tab.</p>
+      <p class="policy-links"><a href="/terms/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Terms &amp; Conditions</a> · <a href="/privacy/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Privacy Policy</a></p>
       <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
       <div class="field"><label for="email">Email for your invitation</label><input id="email" name="email" type="email" autocomplete="email" maxlength="320" required></div>
       <div class="field"><label for="promotion">Promotion code (optional)</label><input id="promotion" name="promotion" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="100" pattern="[A-Za-z0-9]+" aria-describedby="promotionHelp"></div>
