@@ -136,6 +136,8 @@ def test_unavailable_or_invalid_offer_never_buys(page, status, offer):
     page.goto(SITE + "/sod/signup/")
     expect(page.locator("#retryOffer")).to_be_visible()
     expect(page.locator("#launchBtn")).to_be_disabled()
+    expect(page.locator("#launchBtn")).to_have_text("Checkout temporarily unavailable")
+    expect(page.locator("#offerTerms")).to_contain_text("Your node is deployed after checkout")
     fill(page)
     page.locator("#launchForm").evaluate("el => el.dispatchEvent(new Event('submit',{cancelable:true}))")
     assert state["posts"] == []
