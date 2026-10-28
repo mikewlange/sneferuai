@@ -10,15 +10,22 @@ returns to sneferu.ai. Existing cancel URLs at `/sod/?left=1` forward to
 ## Deployment settings and release order
 
 `STORE_ORIGIN` is the single backend setting in each page. Both name
-`https://sod.sneferu.ai` as the production storefront. Public Works already has
-an active sandbox payment authority; it must keep that account, mode and
-ledger. SOD has no active billing ledger and can use the native production
-setup. No backend configuration is changed by this website commit.
+`https://sod.sneferu.ai` as the storefront. The October 28, 2026 read-only
+observation found **SOD now has an activated sandbox ledger** (`sod-1-test`,
+`billing_in_use=true`, `live_mode=false`, `live_approved=false`). Public Works
+also has a sandbox payment authority. Preserve both histories. The native
+settings service refuses changing an activated ledger's mode, Stripe account
+or environment in place; use a separate live authority or an audited migration.
+Do not treat changing a key or enabling an offer as that migration.
+No backend configuration is changed by this website commit.
 
 1. Deploy the matching claudopus backend with `node_offer.site_origin` support.
 2. In the storefront's Billing & plans, set Public site origin to
    `https://sneferu.ai`. Review the actual recurring Stripe price, markup,
-   rate hold and terms. The page reads these values; it contains no price.
+   rate hold and terms. The page reads these values; it contains no fixed offer
+   price. Its $100 usage illustration also uses that same returned markup and
+   monthly fee. Configure a new plan ID and recurring Stripe Price for new
+   terms; retain existing plan IDs and prices for old orders and renewals.
 3. Prepare the launcher's storefront and reviewed purchased-node template:
    billing off on the node, invitation-only, account limit one. Keep existing
    test nodes and Public Works account policy unchanged.
@@ -26,10 +33,17 @@ setup. No backend configuration is changed by this website commit.
    isolated environment. Record separately what is proven with substitutes and
    what is observed live. Do not create paid nodes, charge/refund a card or send
    test mail without specific authorization.
-5. Publish these pages and activate the reviewed production configuration after
-   Public Works Research acceptance. A push to this repository's `main`
-   publishes through GitHub Pages. The existing sandbox Stripe account and $1
-   rehearsal Product are not the agreed $1,999/month production offer.
+5. Verify recurring usage collection before broad paid sales. The observed
+   `node_offer.invoice_usage=false` means automatic usage invoicing is off.
+   The existing soft/hard notices do not enforce a spending limit. Resolve
+   credit exposure explicitly; do not advertise a hard cap or free usage.
+6. Publish and activate only after Mike reviews pricing and the connected
+   live-money evidence. A push to this repository's `main` publishes through
+   GitHub Pages. The observed sandbox offer is $999/month + 20%, with a
+   12-month hold. Earlier $1 rehearsal and $1,999 production figures in old
+   handoffs are not current live-sale approval. The October 28 request proposed
+   $299 + 20% and asked for economic analysis before choosing the price; no
+   new commercial price or rate-hold term has been approved or applied.
 
 The backend can leave the offer disabled throughout preparation. The page
 disables new purchases when the offer is off, missing or unavailable. A saved
@@ -41,6 +55,10 @@ billing when new sales are closed.
 
 ## Important behavior
 
+- The returned plan name is displayed as text, including a Sandbox label when
+  configured. Monthly fee, usage premium and worked monthly total come from
+  one offer response. The example disappears if checkout becomes unavailable.
+  It is not included credit, a quote for a specific job, or a spending cap.
 - Cross-origin fetches omit cookies, referrers and redirects. Only the exact
   configured public origin can read the four guest API routes. No trackers,
   third-party scripts or Formspree submissions run on either purchase page.

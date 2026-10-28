@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="Your own Sneferu instance, running around the clock. Launch a private node for continuous software development.">
+  <meta name="description" content="Your private Sneferu node. One monthly hosting and software fee, plus measured AI usage at a clearly stated premium. See the current offer before checkout.">
   <title>Launch a node — Sneferu Software On Demand</title>
   <link rel="canonical" href="https://sneferu.ai/sod/signup/">
   <style>
@@ -28,6 +28,11 @@
     .message { font-size:13px; color:var(--muted); margin:12px 0 0; overflow-wrap:anywhere; } .error { color:#eea08e; }
     .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .policy-links { font-size:13px; color:var(--muted); margin:8px 0; } .policy-links a { display:inline-block; padding:5px 0; text-underline-offset:3px; } .details { grid-column:1; padding:0; margin:0; list-style:none; color:var(--muted); }
     .details li { margin:0 0 14px; padding-left:24px; position:relative; } .details li::before { content:"✓"; position:absolute; left:0; color:var(--good); }
+    .usage-example { grid-column:1 / -1; border-top:1px solid var(--line); padding-top:24px; width:100%; min-width:0; }
+    .usage-example h2 { font:500 28px/1.2 var(--serif); margin:0 0 12px; } .usage-example p { max-width:65ch; color:var(--muted); }
+    .bill { margin:20px 0 0; max-width:640px; } .bill div { display:flex; justify-content:space-between; gap:20px; padding:10px 0; border-bottom:1px solid var(--line); }
+    .bill dt { min-width:0; } .bill dd { margin:0; white-space:nowrap; font-variant-numeric:tabular-nums; } .bill .bill-total { font-weight:600; }
+    #planName { overflow-wrap:anywhere; }
     .honey { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
     footer { max-width:1140px; padding:28px 32px; margin:auto; color:var(--muted); font-size:12px; } footer a { margin-left:16px; }
     @media(max-width:760px) { .bar { min-height:56px; padding:12px 18px; } .brand img { width:150px; height:24px; } main { display:flex; flex-direction:column; padding:24px 18px; gap:20px; } .intro,.card,.details { width:100%; } h1 { font-size:38px; margin-bottom:12px; max-width:18ch; } .eyebrow { margin-bottom:10px; font-size:10px; } .lede { font-size:16px; } .card { padding:20px; } .price { font-size:28px; } .terms { margin-bottom:16px; } .details { padding-top:12px; font-size:14px; } footer { padding:20px 18px; } }
@@ -39,11 +44,11 @@
   <main>
     <section class="intro">
       <p class="eyebrow">Software On Demand · Live beta</p>
-      <h1>Launch a node.<br>Wake up to working software.</h1>
-      <p class="lede">Your own Sneferu instance, running around the clock. From a few words to working software.</p>
+      <h1>Your software.<br>Your private node.</h1>
+      <p class="lede">A dedicated Sneferu instance for turning ideas into software, with multi-model review and source you own.</p>
     </section>
     <form class="card" id="launchForm" novalidate aria-label="Launch your node">
-      <p class="eyebrow">Your private node</p>
+      <p class="eyebrow" id="planName">Your private node</p>
       <p class="price"><span id="priceMonthly">Loading checkout…</span><small id="monthlyUnit" hidden> / month</small></p>
       <p class="terms" id="offerTerms">Getting the current price and terms.</p>
       <p class="policy-links"><a href="/terms/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Terms &amp; Conditions</a> · <a href="/privacy/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Privacy Policy</a></p>
@@ -56,13 +61,25 @@
       <p class="message" id="launchMsg" role="status" aria-live="polite"></p>
       <button class="button quiet" id="retryOffer" type="button" hidden>Retry checkout</button>
       <p class="fine">Secure payment on Stripe. No account to create first. We email your invitation when your node is ready.</p>
-      <p class="fine">Monthly subscription. Cancel through Manage billing. Model usage is charged separately.<a id="termsLink" href="#" hidden> Offer terms</a></p>
+      <p class="fine">Monthly subscription. Cancel through Manage billing. Model usage is additional. Prices shown exclude applicable taxes.<a id="termsLink" href="#" hidden> Offer terms</a></p>
     </form>
     <ul class="details">
+      <li>Private hosting and the Sneferu software are included in the monthly fee. Model usage is additional.</li>
       <li>A private machine with its own address. Unlimited projects, one build at a time.</li>
       <li>Work with rival AI models that write the specification, build, and check each other’s work.</li>
       <li>Review the running preview and take the source. Every release is yours.</li>
     </ul>
+    <section class="usage-example" id="usageExample" hidden aria-labelledby="usageTitle">
+      <h2 id="usageTitle">A clear monthly bill</h2>
+      <p id="usageExplanation"></p>
+      <dl class="bill">
+        <div><dt>Private node subscription</dt><dd id="exampleSubscription"></dd></div>
+        <div><dt>Example provider usage</dt><dd>$100</dd></div>
+        <div><dt id="examplePremiumLabel">Usage premium</dt><dd id="examplePremium"></dd></div>
+        <div class="bill-total"><dt>Example total for the month</dt><dd id="exampleTotal"></dd></div>
+      </dl>
+      <p class="fine">Illustration before discounts and applicable taxes. The $100 is example usage, not included credit or a spending limit. Actual model usage varies with the work and models used.</p>
+    </section>
     <noscript>JavaScript is needed to check the current offer and open secure checkout. No payment has been started.</noscript>
   </main>
   <footer>Software On Demand · © 2026 Sneferu<a href="/terms/">Terms &amp; Conditions</a><a href="/privacy/">Privacy Policy</a><a href="mailto:mike@sneferu.ai">Contact us</a></footer>
@@ -110,6 +127,7 @@
       $("promotion").addEventListener("input", updateAvailability);
       function closed(text, allowSavedRetry = false) {
         offer = null; $("launchBtn").disabled = true; $("launchBtn").textContent = "Checkout temporarily unavailable";
+        $("usageExample").hidden = true; $("planName").textContent = "Your private node";
         resumeSaved = allowSavedRetry && !!attempt;
         $("priceMonthly").textContent = "Price unavailable"; $("monthlyUnit").hidden = true;
         $("offerTerms").textContent = "Your node is deployed after checkout. We need to reconnect to confirm the price.";
@@ -127,15 +145,26 @@
           if (res.status !== 200 || !o || o.enabled !== true) {
             closed(res.status === 429 ? "Please try again in a minute." : "Checkout is temporarily unavailable. Please retry.", res.status !== 429); return;
           }
-          if (!Number.isSafeInteger(o.monthly_cents) || o.monthly_cents <= 0 || !Number.isInteger(o.markup_percent) || o.markup_percent < 0 || !Number.isInteger(o.hold_months) || o.hold_months < 0) {
+          if (!Number.isSafeInteger(o.monthly_cents) || o.monthly_cents <= 0 || !Number.isInteger(o.markup_percent) || o.markup_percent < 0 || o.markup_percent > 100 || !Number.isInteger(o.hold_months) || o.hold_months < 0 || o.hold_months > 36) {
             closed("The current price could not be confirmed. Please check again shortly."); return;
           }
           offer = o; resumeSaved = false; $("priceMonthly").textContent = money(o.monthly_cents); $("monthlyUnit").hidden = false;
-          $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Founding rate held " + o.hold_months + " months." : "No founding-rate hold.");
+          $("planName").textContent = typeof o.plan_name === "string" && o.plan_name.trim() ? o.plan_name : "Your private node";
+          $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Monthly rate held " + o.hold_months + " months." : "No introductory rate hold.");
+          // The example shares checkout's authoritative offer; a proposed price
+          // must never be published as if it were the configured Stripe price.
+          const exampleUsage = 10000, premium = o.markup_percent * 100;
+          $("usageExplanation").textContent = "The monthly fee covers your private node. Measured model usage is billed at provider cost plus " + o.markup_percent + "%. For example, $100 of provider usage becomes " + money(exampleUsage + premium) + " in usage charges.";
+          $("exampleSubscription").textContent = money(o.monthly_cents);
+          $("examplePremiumLabel").textContent = "Usage premium (" + o.markup_percent + "%)";
+          $("examplePremium").textContent = money(premium);
+          $("exampleTotal").textContent = money(o.monthly_cents + exampleUsage + premium);
+          $("usageExample").hidden = false;
           $("launchBtn").textContent = "Launch your node — " + money(o.monthly_cents) + "/month";
           $("launchBtn").disabled = false; $("retryOffer").hidden = true;
           updateAvailability();
           const terms = safeUrl(o.terms_url);
+          $("termsLink").hidden = true;
           if (terms) { $("termsLink").href = terms; $("termsLink").hidden = false; }
           message(left ? "You left Checkout. Your place is kept; launch when ready." : "");
         } catch (_) { closed("We couldn’t connect to checkout. Please retry."); }

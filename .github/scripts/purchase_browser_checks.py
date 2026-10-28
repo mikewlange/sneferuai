@@ -130,12 +130,50 @@ def test_offer_uses_live_terms_and_button_above_fold(page):
     assert box["y"] + box["height"] < 844, box
 
 
+@pytest.mark.parametrize("fee,markup,plan,expected", [
+    (29900, 20, "Early Adopter", "$419"),
+    (99900, 20, "Sneferu Private Node — Sandbox", "$1,119"),
+    (212350, 17, "Private node", "$2,240.50"),
+    (29900, 0, "Private node", "$399"),
+])
+def test_price_example_uses_the_offer_not_a_marketing_price(page, fee, markup, plan, expected):
+    state = serve(page, offer={**OFFER, "monthly_cents": fee, "markup_percent": markup, "plan_name": plan})
+    page.goto(SITE + "/sod/signup/")
+    expect(page.locator("#usageExample")).to_be_visible()
+    expect(page.locator("#planName")).to_have_text(plan)
+    expect(page.locator("#exampleTotal")).to_have_text(expected)
+    expect(page.locator("#exampleSubscription")).to_have_text(page.locator("#priceMonthly").inner_text())
+    expect(page.locator("#examplePremium")).to_have_text("$" + str(markup))
+    expect(page.locator("#usageExplanation")).to_contain_text("$100 of provider usage becomes $" + str(100 + markup))
+    expect(page.locator("#usageExample")).to_contain_text("not included credit or a spending limit")
+    assert state["posts"] == []
+    for width in (320, 390, 1280):
+        page.set_viewport_size({"width": width, "height": 900})
+        no_overflow(page)
+
+
+def test_plan_name_is_text_and_failed_checkout_hides_stale_price_example(page):
+    plan = '<img src=x onerror="window.injected=true">'
+    serve(page, offer={**OFFER, "plan_name": plan}, post_answers=[(503, {})])
+    page.goto(SITE + "/sod/signup/")
+    expect(page.locator("#planName")).to_have_text(plan)
+    expect(page.locator("#planName img")).to_have_count(0)
+    expect(page.locator("#usageExample")).to_be_visible()
+    fill(page)
+    page.locator("#launchBtn").click()
+    expect(page.locator("#retryOffer")).to_be_visible()
+    expect(page.locator("#usageExample")).to_be_hidden()
+    expect(page.locator("#planName")).to_have_text("Your private node")
+    assert not page.evaluate("Boolean(window.injected)")
+
+
 @pytest.mark.parametrize("status,offer", [(404,{}), (503,{}), (429,{}), (200,{**OFFER,"enabled":False}), (200,{**OFFER,"monthly_cents":None})])
 def test_unavailable_or_invalid_offer_never_buys(page, status, offer):
     state = serve(page, offer=offer, offer_status=status)
     page.goto(SITE + "/sod/signup/")
     expect(page.locator("#retryOffer")).to_be_visible()
     expect(page.locator("#launchBtn")).to_be_disabled()
+    expect(page.locator("#usageExample")).to_be_hidden()
     expect(page.locator("#launchBtn")).to_have_text("Checkout temporarily unavailable")
     expect(page.locator("#offerTerms")).to_contain_text("Your node is deployed after checkout")
     fill(page)
