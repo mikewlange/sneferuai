@@ -99,6 +99,21 @@
         } finally { clearTimeout(timer); }
       }
       function clearReady() { $("lvOpen").hidden = true; $("lvOpen").removeAttribute("href"); $("lvEmail").hidden = true; }
+      function invitationWords(order, email) {
+        const letter = order.letter || {}, expires = order.invitation_expires_at;
+        if (Number.isFinite(expires) && expires > 0 && expires * 1000 <= Date.now())
+          return "The invitation link has expired. Contact the operator for access.";
+        const expiry = Number.isFinite(expires) && expires > 0
+          ? " The link is valid until " + new Date(expires * 1000).toLocaleString() + "." : "";
+        if (letter.delivery === "relay_accepted")
+          return "Your sign-in email" + (email ? " to " + email : "") + " was accepted by the mail service." + expiry;
+        if (letter.delivery === "failed") return "Your sign-in email could not be sent. Contact the operator for help.";
+        if (letter.delivery === "cancelled") return "Your sign-in email was cancelled. Contact the operator for access.";
+        if (letter.delivery === "unknown" && letter.message_id)
+          return "The sign-in email's delivery could not be confirmed. It is not being sent again automatically.";
+        if (!letter.message_id || letter.delivery === "unknown") return "The sign-in email receipt is unavailable.";
+        return "Your sign-in email is being sent." + expiry;
+      }
       function receivedEmail(order) {
         // The API deliberately never exposes buyer email. Only display the
         // address saved in THIS browser for the exact returned order ID.
@@ -128,7 +143,7 @@
           const url = safeUrl(order.open_url);
           if (url) {
             $("lvOpen").href = url; $("lvOpen").hidden = false;
-            $("lvEmail").textContent = email ? "We emailed your sign-in invitation to " + email + "." : "We emailed your sign-in invitation to the address you used at checkout.";
+            $("lvEmail").textContent = invitationWords(order, email);
             $("lvEmail").hidden = false;
           } else { $("lvMessage").textContent = "Your node is ready; we’re checking its address. Please keep this page open."; }
           if (state === "past_due") $("lvMessage").textContent = "Your last renewal needs attention. Update your card under Manage billing; your node keeps running during the grace period.";
@@ -142,11 +157,13 @@
         }
         const list = $("lvSteps"); list.replaceChildren();
         order.steps.forEach((title, index) => {
-          const done = ready || index + 1 < order.step, current = !done && index + 1 === order.step;
+          const done = index === 4 ? (order.letter || {}).delivery === "relay_accepted" : ready || index + 1 < order.step;
+          const current = !done && index + 1 === order.step;
           const li = document.createElement("li"); li.className = "step" + (done ? " done" : current ? " current" : "");
           const mark = document.createElement("b"); mark.textContent = done ? "✓" : String(index + 1); mark.setAttribute("aria-hidden","true");
           const text = document.createElement("div"), name = document.createElement("strong"), status = document.createElement("span");
-          name.textContent = title; status.textContent = done ? "Done" : current ? (order.status === "waiting" ? "Waiting" : "In progress") : "Waiting";
+          name.textContent = title;
+          status.textContent = index === 4 ? invitationWords(order, email) : done ? "Done" : current ? (order.status === "waiting" ? "Waiting" : "In progress") : "Waiting";
           if (current) li.setAttribute("aria-current","step");
           text.append(name,status); li.append(mark,text); list.append(li);
         });
