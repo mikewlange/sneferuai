@@ -277,7 +277,8 @@ def test_server_retry_keeps_checkout_identity(page, status):
 
 def test_checkout_paid_phases_ready_then_billing_without_backend_navigation(page):
     state = serve(page, orders=[(200,order("paid")), (200,order(message="Registering your address",step=3,phase="dns")),
-        (200,order("ready",message="Invitation sent",open_url="https://buyer.example/sod?from=receipt"))])
+        (200,order("ready",message="Invitation sent",open_url="https://buyer.example/sod?from=receipt",
+                   letter={"message_id": "letter_test", "delivery": "relay_accepted"}))])
     page.clock.install()
     page.goto(SITE + "/sod/signup/")
     fill(page)
@@ -291,7 +292,7 @@ def test_checkout_paid_phases_ready_then_billing_without_backend_navigation(page
         page.clock.fast_forward(5000)
     expect(page.locator("#lvOpen")).to_be_visible()
     assert page.locator("#lvOpen").get_attribute("href") == "https://buyer.example/sod?from=receipt"
-    expect(page.locator("#lvEmail")).to_have_text("We emailed your sign-in invitation to ada@example.test.")
+    expect(page.locator("#lvEmail")).to_have_text("Your sign-in email to ada@example.test was accepted by the mail service.")
     assert page.evaluate("key => sessionStorage.getItem(key)", ATTEMPT) is None
     no_overflow(page)
     page.locator("#lvPortal").click()
@@ -300,11 +301,16 @@ def test_checkout_paid_phases_ready_then_billing_without_backend_navigation(page
     assert all("cookie" not in r.headers and "referer" not in r.headers for r in state["requests"])
 
 
-def test_ready_on_another_device_does_not_invent_email(page):
-    serve(page, orders=[(200,order("ready", open_url="https://buyer.example/sod"))])
+@pytest.mark.parametrize("letter,expected", [
+    ({"message_id": "letter_test", "delivery": "relay_accepted"},
+     "Your sign-in email was accepted by the mail service."),
+    ({}, "The sign-in email receipt is unavailable."),
+])
+def test_ready_on_another_device_does_not_invent_email(page, letter, expected):
+    serve(page, orders=[(200,order("ready", open_url="https://buyer.example/sod", letter=letter))])
     page.goto(SITE + "/sod/launching/?o=" + TOKEN)
     expect(page.locator("#lvOpen")).to_be_visible()
-    expect(page.locator("#lvEmail")).to_have_text("We emailed your sign-in invitation to the address you used at checkout.")
+    expect(page.locator("#lvEmail")).to_have_text(expected)
     assert "ada@example.test" not in page.locator("body").inner_text()
 
 
