@@ -565,17 +565,17 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--copper2);outline-of
 .static .spec-card{position:relative;left:auto;bottom:auto;width:min(640px,100%);margin:2em auto 0}
 
 /* Subscription edition: product-led branding and a single demo invitation. */
-.bar .lockup .sod{color:var(--ink);font-size:12px;letter-spacing:.1em;padding-left:0;border:0}
-.bar .lockup img{height:25px;width:auto}
-#s-ask .hero .eyebrow .eb-sod{border:0;padding-left:0;letter-spacing:.18em}
-#s-ask .hero .eyebrow .eb-mark{height:23px}
+.bar .lockup .sod{font-size:11px;letter-spacing:.14em}
+.bar .lockup img{height:26px;width:auto}
+#s-ask .hero .eyebrow .eb-sod{letter-spacing:.18em}
+#s-ask .hero .eyebrow .eb-mark{height:32px}
 .hero-invitation{display:grid;justify-items:center;gap:24px;margin-top:8px}
 #s-ask .hero .hero-invitation .lede{font-size:clamp(15px,1.3vw,19px);line-height:1.6;color:var(--muted)}
 .hero-invitation .btn{font-size:14px;padding:14px 25px}
 .close .h2{font-family:var(--sans);font-style:normal;font-size:clamp(40px,6vw,86px);line-height:1.03;font-weight:600;letter-spacing:-.04em;max-width:15ch}
 .close .lede{font-size:clamp(15px,1.5vw,20px);max-width:28em}
 .static .bar{opacity:1;transform:none}
-@media(max-width:640px){.bar .lockup .sod{display:block;font-size:10px;max-width:112px;line-height:1.4;letter-spacing:.07em}.bar .lockup{gap:9px}.bar .lockup img{height:19px}.bar .cta{font-size:11px;padding:9px 12px}#s-ask .hero .eyebrow .rv{flex-direction:row;gap:12px}#s-ask .hero .eyebrow .eb-sod{font-size:10px;letter-spacing:.12em}.hero-invitation{gap:20px;margin-top:5px}.close{gap:24px}}
+@media(max-width:640px){.bar .lockup .sod{display:block;font-size:8px;line-height:1.2;letter-spacing:.13em;padding-left:0;border:0}.bar .lockup{flex-direction:column;align-items:flex-start;gap:5px}.bar .lockup img{height:18px}.bar .cta{font-size:11px;padding:9px 12px}#s-ask .hero .eyebrow .rv{flex-direction:column;gap:16px}#s-ask .hero .eyebrow .eb-mark{height:26px}#s-ask .hero .eyebrow .eb-sod{font-size:10px;letter-spacing:.18em}.hero-invitation{gap:20px;margin-top:5px}.close{gap:24px}}
 </style>
 </head>
 <body>
@@ -584,7 +584,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--copper2);outline-of
 <div class="grain" aria-hidden="true"></div>
 
 <header class="bar" id="bar">
-  <a class="lockup" href="#s-ask" aria-label="Software On Demand home"><img src="vendor/brand-mark.svg" alt="" width="244" height="84"><span class="sod" data-c="bar.sod">Software On Demand</span></a>
+  <a class="lockup" href="#s-ask" aria-label="Sneferu Software On Demand home"><img src="../assets/logo-dark.svg" alt="Sneferu" width="675" height="84"><span class="sod" data-c="bar.sod">Software On Demand</span></a>
   <div class="sales-actions"><button class="cta" type="button" id="bar-cta" data-c="bar.cta" aria-haspopup="dialog" aria-controls="join">Request a demo</button></div>
 </header>
 
@@ -602,7 +602,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--copper2);outline-of
 <section class="scene" id="s-ask">
   <div class="pin">
     <div class="hero" id="hero">
-      <div class="eyebrow"><span class="rv"><img class="eb-mark" src="vendor/brand-mark.svg" alt="" width="244" height="84"><span class="eb-sod" data-c="hero.eyebrow">Software On Demand</span></span></div>
+      <div class="eyebrow"><span class="rv"><img class="eb-mark" src="../assets/logo-dark.svg" alt="Sneferu" width="675" height="84"><span class="eb-sod" data-c="hero.eyebrow">Software On Demand</span></span></div>
       <h1 class="display" id="h1">What do you want to build?</h1>
       <div class="hero-invitation" id="hero-invitation"><p class="lede">Autonomous software development.<br>From your idea to a working app.</p><button class="btn" type="button" id="hero-cta" aria-haspopup="dialog" aria-controls="join">Request a demo</button></div>
     </div>

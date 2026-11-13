@@ -9,6 +9,7 @@ the existing `sod/index.html`. No library upgrade is included.
   by the original page, with the returned font files hosted locally here.
 - Font licenses: upstream `google/fonts` OFL directories for `inter`,
   `newsreader` and `jetbrainsmono`. Only whitespace and line endings normalized.
-- Brand mark: existing `assets/sneferu-mark-on-light.svg`, unchanged.
+- Full logo: existing `assets/sneferu-logo-on-dark.svg`, unchanged; served from
+  the preview's shared `assets/logo-dark.svg` (byte-for-byte identical).
 
 GSAP's copyright and license URL remain in the headers of both library files.
