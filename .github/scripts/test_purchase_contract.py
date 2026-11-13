@@ -24,11 +24,14 @@ class PurchaseContractTests(TestCase):
         self.assertEqual(len(origins[0]), 1)
         self.assertEqual(origins[0], origins[1])
 
-    def test_price_is_loaded_and_buying_starts_disabled(self):
+    def test_price_is_published_and_buying_starts_disabled(self):
         text = (ROOT / PAGES[0]).read_text()
         nodes = Elements(text).nodes
         button = next(attrs for tag, attrs in nodes if attrs.get("id") == "launchBtn")
         self.assertIn("disabled", button)
+        self.assertIn('id="priceMonthly">$999</span>', text)
+        self.assertIn('id="exampleTotal">$1,119</dd>', text)
+        self.assertNotIn("Price unavailable", text)
         self.assertNotRegex(text, r'\$1,?999|199900')
         self.assertIn('"Idempotency-Key":attempt.key', text)
 

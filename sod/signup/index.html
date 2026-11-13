@@ -49,8 +49,8 @@
     </section>
     <form class="card" id="launchForm" novalidate aria-label="Launch your node">
       <p class="eyebrow" id="planName">Your private node</p>
-      <p class="price"><span id="priceMonthly">Loading checkout…</span><small id="monthlyUnit" hidden> / month</small></p>
-      <p class="terms" id="offerTerms">Getting the current price and terms.</p>
+      <p class="price"><span id="priceMonthly">$999</span><small id="monthlyUnit"> / month</small></p>
+      <p class="terms" id="offerTerms">Private hosting and software included. Model usage at cost + 20%.</p>
       <p class="policy-links"><a href="/terms/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Terms &amp; Conditions</a> · <a href="/privacy/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Privacy Policy</a></p>
       <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
       <div class="field"><label for="email">Email for your invitation</label><input id="email" name="email" type="email" autocomplete="email" maxlength="320" required></div>
@@ -69,14 +69,14 @@
       <li>Work with rival AI models that write the specification, build, and check each other’s work.</li>
       <li>Review the running preview and take the source. Every release is yours.</li>
     </ul>
-    <section class="usage-example" id="usageExample" hidden aria-labelledby="usageTitle">
+    <section class="usage-example" id="usageExample" aria-labelledby="usageTitle">
       <h2 id="usageTitle">A clear monthly bill</h2>
-      <p id="usageExplanation"></p>
+      <p id="usageExplanation">The monthly fee covers your private node. Measured model usage is billed at provider cost plus 20%. For example, $100 of provider usage becomes $120 in usage charges.</p>
       <dl class="bill">
-        <div><dt>Private node subscription</dt><dd id="exampleSubscription"></dd></div>
+        <div><dt>Private node subscription</dt><dd id="exampleSubscription">$999</dd></div>
         <div><dt>Example provider usage</dt><dd>$100</dd></div>
-        <div><dt id="examplePremiumLabel">Usage premium</dt><dd id="examplePremium"></dd></div>
-        <div class="bill-total"><dt>Example total for the month</dt><dd id="exampleTotal"></dd></div>
+        <div><dt id="examplePremiumLabel">Usage premium (20%)</dt><dd id="examplePremium">$20</dd></div>
+        <div class="bill-total"><dt>Example total for the month</dt><dd id="exampleTotal">$1,119</dd></div>
       </dl>
       <p class="fine">Illustration before discounts and applicable taxes. The $100 is example usage, not included credit or a spending limit. Actual model usage varies with the work and models used.</p>
     </section>
@@ -127,11 +127,9 @@
       $("promotion").addEventListener("input", updateAvailability);
       function closed(text, allowSavedRetry = false) {
         offer = null; $("launchBtn").disabled = true; $("launchBtn").textContent = "Checkout temporarily unavailable";
-        $("usageExample").hidden = true; $("planName").textContent = "Your private node";
+        // Checkout availability must never erase the displayed pricing.
         resumeSaved = allowSavedRetry && !!attempt;
-        $("priceMonthly").textContent = "Price unavailable"; $("monthlyUnit").hidden = true;
-        $("offerTerms").textContent = "Your node is deployed after checkout. We need to reconnect to confirm the price.";
-        $("retryOffer").hidden = false; $("termsLink").hidden = true; message(text, true);
+        $("retryOffer").hidden = false; message(text, true);
         if (resumeSaved) {
           $("launchBtn").textContent = "Resume saved checkout";
           message("Checkout could not be loaded. You can retry your saved checkout with its original name and email; the service will confirm the original order.");
@@ -151,8 +149,8 @@
           offer = o; resumeSaved = false; $("priceMonthly").textContent = money(o.monthly_cents); $("monthlyUnit").hidden = false;
           $("planName").textContent = typeof o.plan_name === "string" && o.plan_name.trim() ? o.plan_name : "Your private node";
           $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Monthly rate held " + o.hold_months + " months." : "No introductory rate hold.");
-          // The example shares checkout's authoritative offer; a proposed price
-          // must never be published as if it were the configured Stripe price.
+          // Refresh the published pricing and example together when checkout
+          // confirms its current terms. Outages leave the displayed values intact.
           const exampleUsage = 10000, premium = o.markup_percent * 100;
           $("usageExplanation").textContent = "The monthly fee covers your private node. Measured model usage is billed at provider cost plus " + o.markup_percent + "%. For example, $100 of provider usage becomes " + money(exampleUsage + premium) + " in usage charges.";
           $("exampleSubscription").textContent = money(o.monthly_cents);

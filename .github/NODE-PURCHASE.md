@@ -22,9 +22,11 @@ No backend configuration is changed by this website commit.
 1. Deploy the matching claudopus backend with `node_offer.site_origin` support.
 2. In the storefront's Billing & plans, set Public site origin to
    `https://sneferu.ai`. Review the actual recurring Stripe price, markup,
-   rate hold and terms. The page reads these values; it contains no fixed offer
-   price. Its $100 usage illustration also uses that same returned markup and
-   monthly fee. Configure a new plan ID and recurring Stripe Price for new
+   rate hold and terms. The page includes the approved $999/month price and
+   20% usage premium in its HTML, including the $100 usage illustration.
+   A successful offer response refreshes the displayed terms and example
+   together; checkout failures leave the displayed pricing intact.
+   Configure a new plan ID and recurring Stripe Price for new
    terms; retain existing plan IDs and prices for old orders and renewals.
 3. Prepare the launcher's storefront and reviewed purchased-node template:
    billing off on the node, invitation-only, account limit one. Keep existing
@@ -41,9 +43,10 @@ No backend configuration is changed by this website commit.
    live-money evidence. A push to this repository's `main` publishes through
    GitHub Pages. The observed sandbox offer is $999/month + 20%, with a
    12-month hold. Earlier $1 rehearsal and $1,999 production figures in old
-   handoffs are not current live-sale approval. The October 28 request proposed
-   $299 + 20% and asked for economic analysis before choosing the price; no
-   new commercial price or rate-hold term has been approved or applied.
+   handoffs are not current live-sale approval. On November 13, Mike approved
+   displaying $999/month on the public page. The existing 20% usage premium
+   remains; no rate-hold promise is included in the static pricing. This website
+   change does not configure Stripe or activate live-money sales.
 
 The backend can leave the offer disabled throughout preparation. The page
 disables new purchases when the offer is off, missing or unavailable. A saved
@@ -55,9 +58,11 @@ billing when new sales are closed.
 
 ## Important behavior
 
-- The returned plan name is displayed as text, including a Sandbox label when
-  configured. Monthly fee, usage premium and worked monthly total come from
-  one offer response. The example disappears if checkout becomes unavailable.
+- Pricing and the worked monthly total are visible immediately, even without
+  JavaScript or a working checkout server. The returned plan name is displayed
+  as text, including a Sandbox label when configured. A valid offer response
+  refreshes the monthly fee, usage premium and worked monthly total together.
+  The price and example remain visible if checkout becomes unavailable.
   It is not included credit, a quote for a specific job, or a spending cap.
 - Cross-origin fetches omit cookies, referrers and redirects. Only the exact
   configured public origin can read the four guest API routes. No trackers,
@@ -99,6 +104,17 @@ Browser checks use local API, payment and launcher fixtures; all requests are
 intercepted. They prove the shipped pages, responsive layout, retries and
 navigation in Chromium/WebKit. They do not prove live payment, cloud capacity,
 email receipt, physical-phone behavior or the private node's first login.
+
+## November 13 pricing outage
+
+The public checkout address still resolved to `sod-1` at `34.29.86.35`, but the
+instance was stopped. Cloud records show a stop through the fleet manager
+service account on November 4. The public offer request timed out, and the old
+page deliberately erased the price and example in its checkout failure handler.
+The static price fixes that presentation dependency. The checkout service still
+needs to be restored or replaced separately; this change does not restart it.
+Regression checks cover pending and timed-out requests, network errors, disabled
+or invalid offers, checkout errors after a successful offer, and JavaScript off.
 
 ## October 7 final review follow-through
 

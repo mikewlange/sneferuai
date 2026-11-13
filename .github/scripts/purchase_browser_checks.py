@@ -56,6 +56,8 @@ def serve(page, *, offer=OFFER, offer_status=200, orders=None, post_answers=None
     answers = post_answers or [(201, {"order_id": "nord_test", "checkout_url": "https://checkout.stripe.com/c/pay/test"})]
 
     def reply(route, status, body):
+        if status == "hang":
+            return
         if status == "abort":
             route.abort("connectionreset")
             return
@@ -152,7 +154,7 @@ def test_price_example_uses_the_offer_not_a_marketing_price(page, fee, markup, p
         no_overflow(page)
 
 
-def test_plan_name_is_text_and_failed_checkout_hides_stale_price_example(page):
+def test_plan_name_is_text_and_failed_checkout_keeps_pricing_visible(page):
     plan = '<img src=x onerror="window.injected=true">'
     serve(page, offer={**OFFER, "plan_name": plan}, post_answers=[(503, {})])
     page.goto(SITE + "/sod/signup/")
@@ -162,24 +164,65 @@ def test_plan_name_is_text_and_failed_checkout_hides_stale_price_example(page):
     fill(page)
     page.locator("#launchBtn").click()
     expect(page.locator("#retryOffer")).to_be_visible()
-    expect(page.locator("#usageExample")).to_be_hidden()
-    expect(page.locator("#planName")).to_have_text("Your private node")
+    expect(page.locator("#priceMonthly")).to_have_text("$1,999")
+    expect(page.locator("#monthlyUnit")).to_be_visible()
+    expect(page.locator("#offerTerms")).to_contain_text("20%")
+    expect(page.locator("#usageExample")).to_be_visible()
+    expect(page.locator("#exampleTotal")).to_have_text("$2,119")
+    expect(page.locator("#planName")).to_have_text(plan)
+    expect(page.locator("#launchBtn")).to_be_disabled()
     assert not page.evaluate("Boolean(window.injected)")
 
 
-@pytest.mark.parametrize("status,offer", [(404,{}), (503,{}), (429,{}), (200,{**OFFER,"enabled":False}), (200,{**OFFER,"monthly_cents":None})])
+@pytest.mark.parametrize("status,offer", [("abort",{}), (404,{}), (503,{}), (429,{}), (200,"<html>Bad gateway</html>"), (200,{**OFFER,"enabled":False}), (200,{**OFFER,"monthly_cents":None})])
 def test_unavailable_or_invalid_offer_never_buys(page, status, offer):
     state = serve(page, offer=offer, offer_status=status)
     page.goto(SITE + "/sod/signup/")
     expect(page.locator("#retryOffer")).to_be_visible()
     expect(page.locator("#launchBtn")).to_be_disabled()
-    expect(page.locator("#usageExample")).to_be_hidden()
+    expect(page.locator("#priceMonthly")).to_have_text("$999")
+    expect(page.locator("#monthlyUnit")).to_be_visible()
+    expect(page.locator("#usageExample")).to_be_visible()
+    expect(page.locator("#exampleSubscription")).to_have_text("$999")
+    expect(page.locator("#exampleTotal")).to_have_text("$1,119")
     expect(page.locator("#launchBtn")).to_have_text("Checkout temporarily unavailable")
-    expect(page.locator("#offerTerms")).to_contain_text("Your node is deployed after checkout")
+    expect(page.locator("#offerTerms")).to_contain_text("Model usage at cost + 20%")
     fill(page)
     page.locator("#launchForm").evaluate("el => el.dispatchEvent(new Event('submit',{cancelable:true}))")
     assert state["posts"] == []
     no_overflow(page)
+
+
+def test_published_price_visible_while_checkout_waits_and_after_timeout(page):
+    page.clock.install()
+    serve(page, offer_status="hang")
+    page.goto(SITE + "/sod/signup/")
+    expect(page.locator("#priceMonthly")).to_have_text("$999")
+    expect(page.locator("#monthlyUnit")).to_be_visible()
+    expect(page.locator("#usageExample")).to_be_visible()
+    expect(page.locator("#launchBtn")).to_be_disabled()
+    expect(page.locator("#retryOffer")).to_be_hidden()
+    page.clock.fast_forward(20001)
+    expect(page.locator("#retryOffer")).to_be_visible()
+    expect(page.locator("#priceMonthly")).to_have_text("$999")
+    expect(page.locator("#exampleTotal")).to_have_text("$1,119")
+    expect(page.locator("#launchBtn")).to_be_disabled()
+
+
+def test_published_price_visible_without_javascript(browser):
+    context = browser.new_context(java_script_enabled=False)
+    try:
+        page = context.new_page()
+        state = serve(page)
+        page.goto(SITE + "/sod/signup/")
+        expect(page.locator("#priceMonthly")).to_have_text("$999")
+        expect(page.locator("#monthlyUnit")).to_be_visible()
+        expect(page.locator("#usageExample")).to_be_visible()
+        expect(page.locator("#exampleTotal")).to_have_text("$1,119")
+        expect(page.locator("#launchBtn")).to_be_disabled()
+        assert state["requests"] == []
+    finally:
+        context.close()
 
 
 @pytest.mark.parametrize("path", ["/sod/signup/?left=1", "/sod/?left=1"])
