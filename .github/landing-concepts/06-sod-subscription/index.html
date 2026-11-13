@@ -122,7 +122,7 @@ window.SOD_COPY = {
 
   preview: {
     eyebrow: 'Preview',
-    stages: ['Then you try the real app,<br>before you accept anything.', 'Not right? Say what to fix.<br>We fix it and prove it again.'],
+    stages: ['Then you try the real app,<br>before you accept anything.', 'Need changes or enhancements?<br>Iterate until it’s perfect.'],
     url: 'preview-7f3a.sneferu.app/',
     app: { brand: 'Certify', title: 'Q3 access certification · Finance', sub: '400 people · Okta + AWS · due in 6 days',
       rows: [
@@ -1125,7 +1125,8 @@ pinScene('#s-ask',29,0,tl=>{
   cls(tl,t+.1,person1,'typing',false);
   press(tl,'#send',$('#send-ripple'),t+.3,composer);
   tl.to(person1,{yPercent:112,duration:1.1,ease:'power3.in'},t+.6);
-  tl.to(composer,{scale:.02,opacity:0,borderRadius:'50%',duration:.95,ease:'power3.in'},t+.7);
+  // Keep the original rectangular panel; the separate seed handles the next scene.
+  tl.to(composer,{scale:.02,opacity:0,duration:.95,ease:'power3.in'},t+.7);
   tl.to(seed1,{scale:1,duration:.5,ease:'back.out(2)'},t+1.45);
   // ── the bloom ── (the seed glides to where the bloom will grow)
   const o=t+2.0;

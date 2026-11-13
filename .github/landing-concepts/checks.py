@@ -190,6 +190,7 @@ def test_sod_subscription_copy_preserves_story_without_money_scene(browser, site
         page.goto(site + '/06-sod-subscription/?person=0')
         page.evaluate('document.fonts.ready')
         expect(page.locator('h1')).to_have_text('What do you want to build?')
+        expect(page.locator('#prev-t2 h2')).to_have_text('Need changes or enhancements?Iterate until it’s perfect.')
         expect(page.locator('main')).to_have_count(1)
         assert page.locator('section.scene').evaluate_all('(scenes) => scenes.map(s => s.id)') == [
             's-ask', 's-tree', 's-build', 's-proof', 's-preview', 's-close']
@@ -262,5 +263,44 @@ def test_sod_story_and_demo_survive_animation_library_failure(browser, site):
         page.locator('#s-close').scroll_into_view_if_needed()
         expect(page.locator('#close-cta')).to_be_in_viewport()
         assert not state['errors'], state
+    finally:
+        context.close()
+
+
+@pytest.mark.parametrize('width', [390, 1440])
+def test_sod_composer_keeps_original_rectangle_through_scroll_and_refresh(browser, site, width):
+    context = browser.new_context(viewport={'width': width, 'height': 900})
+    page = context.new_page()
+    state = intercept(page, site)
+
+    def scroll_to_time(time):
+        page.evaluate('''time => {
+            const scene = ScrollTrigger.getAll().find(s => s.trigger.id === 's-ask');
+            window.scrollTo(0, scene.start + time / scene.animation.duration() * (scene.end - scene.start));
+            ScrollTrigger.update();
+        }''', time)
+        page.wait_for_function('''time => Math.abs(
+            ScrollTrigger.getAll().find(s => s.trigger.id === 's-ask').animation.time() - time
+        ) < .02''', arg=time)
+        expect(page.locator('#composer')).to_have_css('border-radius', '26px')
+
+    try:
+        page.goto(site + '/06-sod-subscription/?person=0')
+        page.evaluate('document.fonts.ready')
+        # Both typing examples, the departure, and scrolling back from the idea scene.
+        for time in [4, 9, 11, 18, 9, 4]:
+            scroll_to_time(time)
+        scroll_to_time(18)
+        page.set_viewport_size({'width': 768, 'height': 900})
+        page.evaluate('ScrollTrigger.refresh()')
+        scroll_to_time(9)
+        expect(page.locator('#composer')).to_have_css('opacity', '1')
+        scroll_to_time(18)
+        page.reload()
+        page.evaluate('document.fonts.ready')
+        scroll_to_time(4)
+        expect(page.locator('#composer')).to_have_css('opacity', '1')
+        assert not state['errors'], state
+        assert not state['missing'], state
     finally:
         context.close()
