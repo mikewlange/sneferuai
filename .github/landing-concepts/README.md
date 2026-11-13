@@ -29,6 +29,26 @@ is supplied by its inline `SOD_COPY` object. The alternatives below contain
 Recommendation: 01 for the clearest introduction; 04 for a restrained version
 of the existing SOD scrolling experience. The comparison index links to each.
 
+## New SOD subscription direction
+
+`06-sod-subscription/` is a separate copy of the original `sod/index.html`, as
+requested after reviewing the five concepts. The original is untouched.
+The copy retains the original dark scrolling storyboard, illustrations,
+specification tree, coding/review, proof and working-app preview scenes.
+
+The invoice/delivery scene, its payment wording, dollar counter, navigation
+entry, generated content and scroll timeline are removed together. The story
+now moves from trying the app to a subscription-oriented demo invitation.
+Software On Demand leads the branding; Sneferu remains the small attribution.
+Hero, navigation and closing buttons all open the existing contact dialog,
+now labeled as a demo request. No subscription or billing configuration changes.
+
+The original source at copy time had SHA-256
+`1b4e935243d8646db345eb1428ddd027454d256efdfad5ad9cf1af9a3146e3ca`.
+The same GSAP 3.12.5 libraries and font families are bundled locally in this
+draft to preserve the original animation without relying on CDN availability.
+The libraries retain their upstream license notices. Font licenses are included.
+
 ## Preview
 
 From the repository root:
