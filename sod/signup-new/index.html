@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Launch your private Sneferu cloud VM. Build enterprise software and run research on your data. One monthly fee for a machine that is yours alone, plus measured AI usage at a clearly stated premium.">
+  <title>Launch your private VM | Sneferu Software On Demand</title>
+  <link rel="canonical" href="https://sneferu.ai/sod/signup/">
+  <style>
+    :root { color-scheme:dark; --canvas:#0d0c0c; --surface:#151413; --surface-2:#1b1917; --line:#4a433d; --line-soft:#2c2824; --text:#f2ede4; --soft:#cfc7ba; --muted:#aaa298; --brand:#e2ad84; --action:#d7bd99; --ink:#28170e; --good:#6fb58d; --serif:"Iowan Old Style",Palatino,Georgia,serif; --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    * { box-sizing:border-box; } [hidden] { display:none!important; }
+    html { scroll-behavior:smooth; } @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    body { margin:0; background:radial-gradient(circle at 15% 0,rgba(189,117,76,.13),transparent 36rem),var(--canvas); color:var(--text); font:16px/1.5 var(--sans); }
+    a { color:var(--action); } button,input { font:inherit; } button,a,input { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:2px solid var(--brand); outline-offset:4px; }
+    [id] { scroll-margin-top:24px; }
+
+    /* Top bar */
+    header { border-bottom:1px solid #35302c; } .bar { max-width:1140px; min-height:76px; margin:auto; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand img { display:block; width:190px; max-width:100%; height:28px; }
+    .nav { display:flex; align-items:center; gap:28px; font-size:13px; } .nav a { text-decoration:none; color:var(--muted); padding:8px 0; } .nav a:hover { color:var(--text); } .nav .home { color:var(--action); }
+
+    /* Shared layout */
+    .wrap { max-width:1140px; margin:0 auto; padding-left:32px; padding-right:32px; }
+    .block { padding-top:88px; padding-bottom:88px; }
+    .band { background:var(--surface); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); }
+    .eyebrow { color:var(--brand); text-transform:uppercase; font-size:11px; font-weight:600; letter-spacing:.16em; margin:0 0 14px; }
+    h2 { font:500 clamp(30px,3.6vw,46px)/1.08 var(--serif); letter-spacing:-.02em; margin:0 0 14px; text-wrap:balance; }
+    .sub { color:var(--muted); font-size:18px; margin:0 0 40px; max-width:60ch; }
+
+    /* Hero: the offer on the left, checkout on the right */
+    .hero { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); grid-template-rows:auto 1fr; gap:28px 64px; align-items:start; padding-top:70px; padding-bottom:84px; }
+    .intro { grid-column:1; grid-row:1; min-width:0; } .pitch { grid-column:1; grid-row:2; min-width:0; }
+    h1,.tagline { font:500 clamp(34px,4vw,50px)/1.06 var(--serif); letter-spacing:-.025em; margin:0; text-wrap:balance; }
+    .tagline { color:var(--brand); margin-top:12px; } .tagline span { display:block; }
+    .lede { color:var(--soft); font-size:19px; margin:0; max-width:34ch; }
+    .cta-row { display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
+    .ghost { display:inline-block; padding:13px 20px; border:1px solid #6a6058; border-radius:6px; color:var(--text); text-decoration:none; font-weight:600; font-size:15px; text-align:center; }
+    .ghost:hover { border-color:var(--brand); color:var(--brand); }
+
+    /* Checkout card (unchanged behaviour) */
+    .card { grid-column:2; grid-row:1 / span 2; border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:28px; min-width:0; box-shadow:0 30px 80px rgba(0,0,0,.35); }
+    .price { font-size:32px; font-weight:600; margin:0; } .price small { font-size:15px; color:var(--muted); font-weight:400; }
+    .terms { color:var(--muted); font-size:13px; margin:5px 0 20px; } label { display:block; font-size:13px; margin-bottom:5px; }
+    .field { margin:0 0 15px; } input { width:100%; min-height:48px; padding:11px 12px; border:1px solid var(--line); border-radius:4px; background:#11100f; color:var(--text); font-size:16px; }
+    .button { display:block; width:100%; border:1px solid #e1c6a2; border-radius:6px; min-height:52px; padding:12px 14px; background:linear-gradient(135deg,var(--action),#c99e71); color:var(--ink); font-weight:700; font-size:15px; cursor:pointer; text-align:center; text-decoration:none; }
+    #launchBtn { margin-top:14px; }
+    .button:hover:not(:disabled) { background:var(--text); } .button:disabled { cursor:default; opacity:.65; } .quiet { background:transparent; color:var(--action); border-color:var(--line); margin-top:12px; }
+    .message { font-size:13px; color:var(--muted); margin:12px 0 0; overflow-wrap:anywhere; } .error { color:#eea08e; }
+    .fine { font-size:12px; color:var(--muted); margin:14px 0 0; } .policy-links { font-size:13px; color:var(--muted); margin:8px 0; } .policy-links a { display:inline-block; padding:5px 0; text-underline-offset:3px; }
+    #planName { overflow-wrap:anywhere; }
+    .honey { position:absolute; width:1px; height:1px; clip-path:inset(50%); overflow:hidden; }
+
+    /* What is Sneferu */
+    .what { display:grid; grid-template-columns:minmax(0,260px) minmax(0,1fr); gap:20px 56px; padding-top:64px; padding-bottom:64px; }
+    .what h2 { font-size:32px; margin:0; } .what p { margin:0; font:400 clamp(19px,1.9vw,24px)/1.5 var(--serif); color:#e6dfd3; }
+
+    /* What you get */
+    .gets { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr)); gap:18px; }
+    .get { background:var(--surface); border:1px solid var(--line-soft); border-radius:8px; padding:26px; min-width:0; }
+    .get h3 { font:600 19px/1.25 var(--sans); margin:0 0 8px; } .get p { margin:0; color:#c9c1b4; }
+    .get.feature { border-color:var(--brand); background:linear-gradient(180deg,#1f1813,var(--surface) 70%); }
+    .specs { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0; padding:0; list-style:none; }
+    .specs li { font:600 12px/1 var(--mono); color:var(--brand); border:1px solid #5a4636; border-radius:999px; padding:7px 10px; white-space:nowrap; }
+
+    /* A clear monthly bill */
+    .usage-example { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px 64px; align-items:start; }
+    .usage-example h2 { font-size:clamp(28px,3vw,38px); } .usage-example p { color:var(--muted); margin:0; max-width:52ch; } .usage-example .fine { margin-top:14px; }
+    .bill { margin:0; border:1px solid var(--line-soft); border-radius:8px; background:var(--surface); padding:8px 24px; } .bill div { display:flex; justify-content:space-between; gap:20px; padding:14px 0; border-bottom:1px solid var(--line-soft); }
+    .bill div:last-child { border-bottom:0; } .bill dt { min-width:0; color:var(--soft); } .bill dd { margin:0; white-space:nowrap; font-variant-numeric:tabular-nums; } .bill .bill-total { font-weight:600; } .bill .bill-total dt { color:var(--text); }
+
+    /* How it compares */
+    .matrix-wrap { overflow-x:auto; border:1px solid var(--line-soft); border-radius:8px; -webkit-overflow-scrolling:touch; }
+    .matrix { width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; font-size:14.5px; line-height:1.4; text-align:left; }
+    .matrix th,.matrix td { padding:14px 16px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+    .matrix tbody tr:last-child th,.matrix tbody tr:last-child td { border-bottom:0; }
+    .matrix thead th { color:var(--muted); font-weight:600; font-size:13px; letter-spacing:.04em; vertical-align:bottom; }
+    .matrix tbody th,.matrix thead th:first-child { position:sticky; left:0; z-index:1; background:var(--canvas); color:var(--muted); font-weight:500; width:13%; }
+    .matrix td { color:#c9c1b4; }
+    .matrix .us { background:var(--surface-2); color:var(--text); font-weight:600; border-left:1px solid #5a4636; border-right:1px solid #5a4636; width:17%; }
+    .matrix thead .us { color:var(--brand); font-size:17px; letter-spacing:0; border-top:3px solid var(--brand); }
+    .sr { position:absolute; left:-9999px; }
+    .swipe { display:none; font-size:12px; color:var(--muted); margin:10px 0 0; }
+
+    /* See it work */
+    .steps { display:flex; flex-direction:column; gap:76px; margin-top:52px; }
+    .step { min-width:0; }
+    .step-head { display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:8px 56px; align-items:end; margin-bottom:22px; }
+    .step-title { display:flex; align-items:baseline; gap:16px; min-width:0; }
+    .step .num { font:500 34px/1 var(--serif); color:var(--brand); margin:0; }
+    .step h3 { font:600 24px/1.2 var(--sans); margin:0; }
+    .step .desc { margin:0; color:#c9c1b4; font-size:17px; }
+    .frame { margin:0; min-width:0; border:1px solid #35302c; border-radius:10px; overflow:hidden; background:#0b0a0a; box-shadow:0 24px 60px rgba(0,0,0,.45); }
+    .frame::before { content:""; display:block; height:28px; border-bottom:1px solid #2a2622; background:radial-gradient(circle at 16px 14px,#4a433d 0 4px,transparent 5px),radial-gradient(circle at 31px 14px,#4a433d 0 4px,transparent 5px),radial-gradient(circle at 46px 14px,#4a433d 0 4px,transparent 5px),#141211; }
+    .shot { display:block; position:relative; overflow:hidden; } .shot img { display:block; width:100%; height:auto; }
+    .shot.clip { aspect-ratio:16 / 10; } .shot.clip::after { content:""; position:absolute; left:0; right:0; bottom:0; height:16%; background:linear-gradient(180deg,rgba(11,10,10,0),#0b0a0a 94%); pointer-events:none; }
+
+    /* Three ways to start */
+    .ways { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); gap:18px; margin-top:36px; }
+    .way { border:1px solid var(--line); border-radius:8px; padding:26px; background:var(--canvas); display:flex; flex-direction:column; gap:12px; min-width:0; }
+    .way.primary { border-color:var(--brand); } .way h3 { font:600 20px/1.25 var(--sans); margin:0; } .way p { margin:0; color:#c9c1b4; flex:1 1 auto; }
+    .way .button,.way .ghost { display:block; width:100%; }
+    .smallprint { font-size:13px; color:var(--muted); margin:36px 0 0; max-width:70ch; }
+
+    footer { max-width:1140px; padding:28px 32px; margin:auto; color:var(--muted); font-size:12px; } footer a { margin-left:16px; }
+
+    @media(max-width:900px) { .nav a:not(.home) { display:none; } }
+    @media(max-width:760px) {
+      .bar { min-height:56px; padding:12px 18px; } .brand img { width:150px; height:24px; }
+      .wrap { padding-left:18px; padding-right:18px; } .block { padding-top:56px; padding-bottom:56px; }
+      .hero { display:flex; flex-direction:column; padding-top:24px; padding-bottom:48px; gap:20px; } .intro,.card,.pitch { width:100%; }
+      h1,.tagline { font-size:30px; } .tagline { margin-top:6px; } .eyebrow { margin-bottom:10px; font-size:10px; } .lede { font-size:16px; max-width:none; }
+      .card { padding:20px; } .price { font-size:28px; } .terms { margin-bottom:16px; }
+      .what { grid-template-columns:minmax(0,1fr); padding-top:44px; padding-bottom:44px; } .sub { font-size:16px; margin-bottom:28px; }
+      .usage-example { grid-template-columns:minmax(0,1fr); } .bill { padding:4px 18px; }
+      .steps { gap:44px; margin-top:32px; } .step-head { grid-template-columns:minmax(0,1fr); margin-bottom:16px; } .step-title { gap:12px; }
+      .step .num { font-size:26px; } .step h3 { font-size:21px; } .step .desc { font-size:16px; }
+      .swipe { display:block; } footer { padding:20px 18px; }
+    }
+    @media(max-width:420px) { .hero { padding-top:18px; gap:16px; } h1,.tagline { font-size:27px; } .card { padding:14px; } .terms { margin-bottom:8px; } .policy-links { margin:4px 0; } .field { margin-bottom:10px; } #launchBtn { margin-top:10px; } }
+  </style>
+</head>
+<body>
+  <header><div class="bar"><a class="brand" href="/" aria-label="Sneferu home"><img src="/assets/sneferu-logo-on-dark.svg" alt="Sneferu"></a><nav class="nav" aria-label="On this page"><a href="#get">What you get</a><a href="#compare">Compare</a><a href="#see">See it work</a><a class="home" href="/sod/">About Software On Demand ↗</a></nav></div></header>
+  <main>
+    <div class="hero wrap">
+      <section class="intro">
+        <p class="eyebrow">Software On Demand · Live beta</p>
+        <h1>Launch your private Sneferu cloud VM.</h1>
+        <p class="tagline"><span>Build enterprise software.</span> <span>Run research on your data.</span></p>
+      </section>
+      <form class="card" id="launchForm" novalidate aria-label="Launch your VM">
+        <p class="eyebrow" id="planName">Your private VM</p>
+        <p class="price"><span id="priceMonthly">$999</span><small id="monthlyUnit"> / month</small></p>
+        <p class="terms" id="offerTerms">Private hosting and software included. Model usage at cost + 20%.</p>
+        <p class="policy-links"><a href="/terms/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Terms &amp; Conditions</a> · <a href="/privacy/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Privacy Policy</a></p>
+        <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
+        <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" maxlength="320" required></div>
+        <div class="field"><label for="promotion">Promotion code (optional)</label><input id="promotion" name="promotion" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="100" pattern="[A-Za-z0-9]+" aria-describedby="promotionHelp"></div>
+        <p class="fine" id="promotionHelp">A promotion reduces only the monthly VM fee. Stripe confirms the discount before you continue. Usage and any setup fee stay separate.</p>
+        <div class="honey" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <button class="button" id="launchBtn" type="submit" disabled>Loading checkout…</button>
+        <p class="message" id="launchMsg" role="status" aria-live="polite"></p>
+        <button class="button quiet" id="retryOffer" type="button" hidden>Retry checkout</button>
+        <p class="fine">Secure payment on Stripe. No account to create first. We email your invitation when your VM is ready.</p>
+        <p class="fine">Monthly subscription. Cancel through Manage billing. Model usage is additional. Prices shown exclude applicable taxes.<a id="termsLink" href="#" hidden> Offer terms</a></p>
+      </form>
+      <div class="pitch">
+        <p class="lede">A machine that is yours alone. <span data-offer-price>$999</span> a month. Model usage at cost plus <span data-offer-markup>20%</span>. Ready in about 30 minutes.</p>
+        <div class="cta-row">
+          <a class="ghost" href="mailto:mike@sneferu.ai?subject=Book%20a%20demo%3A%20Sneferu%20Software%20On%20Demand">Book a demo</a>
+          <a class="ghost" href="mailto:mike@sneferu.ai?subject=Request%20information%3A%20Sneferu%20Software%20On%20Demand">Request information</a>
+        </div>
+      </div>
+    </div>
+
+    <section class="band" aria-labelledby="whatTitle">
+      <div class="what wrap">
+        <h2 id="whatTitle">What is Sneferu?</h2>
+        <p>Sneferu is an autonomous enterprise software development platform. You describe what you need. More than 60 AI roles, filled by models from rival labs, plan it, argue it, build it and test it. It gets the best out of AI models by making them challenge each other, and carries your goal to a completed V1, ready to iterate.</p>
+      </div>
+    </section>
+
+    <section class="block wrap" id="get" aria-labelledby="getTitle">
+      <h2 id="getTitle">What you get</h2>
+      <p class="sub">You don’t manage it. You tell it what to build.</p>
+      <div class="gets">
+        <div class="get feature">
+          <h3>A private cloud VM, yours alone</h3>
+          <p>A dedicated Google Cloud server. Not shared with any other customer.</p>
+          <ul class="specs" aria-label="Machine size"><li>16 processors</li><li>64 GB memory</li><li>200 GB disk</li></ul>
+        </div>
+        <div class="get">
+          <h3>Software on demand</h3>
+          <p>Describe what you need. Rival AI models plan it, build it and test it. You try the running app before you accept it.</p>
+        </div>
+        <div class="get">
+          <h3>Research on your data</h3>
+          <p>Ask a question. It runs real analysis on public archives or on your own files and storage.</p>
+        </div>
+        <div class="get">
+          <h3>Your choice of models</h3>
+          <p>Every seat is shown. Keep the defaults, or pick the provider and model for each one. Name a research cast and reuse it.</p>
+        </div>
+        <div class="get">
+          <h3>Unlimited projects</h3>
+          <p>One build at a time. No per-build fee.</p>
+        </div>
+        <div class="get">
+          <h3>You own the source</h3>
+          <p>Every release is yours, with a delivery package and run instructions.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="band">
+      <section class="usage-example block wrap" id="usageExample" aria-labelledby="usageTitle">
+        <div>
+          <h2 id="usageTitle">A clear monthly bill</h2>
+          <p id="usageExplanation">The monthly fee covers your private VM. Measured model usage is billed at provider cost plus 20%. For example, $100 of provider usage becomes $120 in usage charges.</p>
+          <p class="fine">Illustration before discounts and applicable taxes. The $100 is example usage, not included credit or a spending limit. Actual model usage varies with the work and models used.</p>
+        </div>
+        <dl class="bill">
+          <div><dt>Private VM subscription</dt><dd id="exampleSubscription">$999</dd></div>
+          <div><dt>Example provider usage</dt><dd>$100</dd></div>
+          <div><dt id="examplePremiumLabel">Usage premium (20%)</dt><dd id="examplePremium">$20</dd></div>
+          <div class="bill-total"><dt>Example total for the month</dt><dd id="exampleTotal">$1,119</dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <section class="block wrap" id="compare" aria-labelledby="compareTitle">
+      <h2 id="compareTitle">How it compares</h2>
+      <p class="sub">From each company’s own website, read November 13, 2026.</p>
+      <div class="matrix-wrap" role="region" aria-labelledby="compareTitle" tabindex="0">
+        <table class="matrix">
+          <thead>
+            <tr><th scope="col"><span class="sr">Question</span></th><th scope="col" class="us">Sneferu</th><th scope="col">Blitzy</th><th scope="col">Opsera Forge</th><th scope="col">8090</th><th scope="col">Devin</th><th scope="col">Factory</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Best for</th><td class="us">Anyone with an idea and no engineering department</td><td>Enterprises with large existing codebases</td><td>Enterprise IT that needs sign-offs</td><td>Enterprises with engineering teams</td><td>Engineering teams</td><td>Engineering teams</td></tr>
+            <tr><th scope="row">Where it runs</th><td class="us">Your own private VM, from day one</td><td>Their platform</td><td>Your cloud, by arrangement</td><td>Not stated</td><td>Shared. Private on Enterprise</td><td>Shared. Private on Enterprise</td></tr>
+            <tr><th scope="row">Price of private</th><td class="us"><span data-offer-price>$999</span> a month</td><td>$500,000 a year tier</td><td>Demo call</td><td>Not stated</td><td>“Let’s talk”</td><td>Contact sales</td></tr>
+            <tr><th scope="row">How you start</th><td class="us">Pay online, ready in 30 minutes</td><td>Pilot</td><td>Assessment call</td><td>Talk to us</td><td>Self-serve for shared, sales for private</td><td>Self-serve for shared, sales for private</td></tr>
+            <tr><th scope="row">Starts from</th><td class="us">One plain request</td><td>Your codebase</td><td>An idea and your codebase</td><td>Written requirements</td><td>A ticket</td><td>Your codebase</td></tr>
+            <tr><th scope="row">Who checks the work</th><td class="us">Rival AI labs, then you accept</td><td>Its agents, then your engineers</td><td>Your engineers approve every merge</td><td>Your engineers sign off</td><td>Not stated</td><td>“Humans on judgment”</td></tr>
+            <tr><th scope="row">You end up with</th><td class="us">A running app and the source</td><td>Code, 80%+ done</td><td>A change set</td><td>Pull requests</td><td>A pull request</td><td>Pull requests</td></tr>
+            <tr><th scope="row">Research on your data</th><td class="us">Yes</td><td>Not on site</td><td>Not on site</td><td>Not on site</td><td>Not on site</td><td>Not on site</td></tr>
+            <tr><th scope="row">Choose your models</th><td class="us">Yes, seat by seat</td><td>Not stated</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="swipe">Swipe sideways to see all six.</p>
+    </section>
+
+    <div class="band">
+      <section class="block wrap" id="see" aria-labelledby="seeTitle">
+        <h2 id="seeTitle">See it work</h2>
+        <p class="sub">Real screens from the Sneferu workspace.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-head"><div class="step-title"><p class="num">01</p><h3>You describe it</h3></div><p class="desc">One plain request. No ticket and no codebase needed.</p></div>
+            <figure class="frame"><a class="shot" href="/assets/sod-signup/request.jpg" target="_blank" rel="noopener" title="Opens the full screenshot in a new tab"><img src="/assets/sod-signup/request.jpg" width="1600" height="800" loading="lazy" decoding="async" alt="The request form in the Sneferu workspace, headed: What should Sneferu build?"></a></figure>
+          </div>
+          <div class="step">
+            <div class="step-head"><div class="step-title"><p class="num">02</p><h3>You choose the cast</h3></div><p class="desc">Every seat is shown: who writes, attacks, scores and judges the plan. Keep the defaults, or pick the provider and model for each one.</p></div>
+            <figure class="frame"><a class="shot clip" href="/assets/sod-signup/cast.jpg" target="_blank" rel="noopener" title="Opens the full screenshot in a new tab"><img src="/assets/sod-signup/cast.jpg" width="1600" height="1091" loading="lazy" decoding="async" alt="The planning team table: author, adversary, judge, synthesizer, explorers and scorers, each with its provider and model."></a></figure>
+          </div>
+          <div class="step">
+            <div class="step-head"><div class="step-title"><p class="num">03</p><h3>Rival models argue the plan</h3></div><p class="desc">Drafts compete, get attacked, and get rewritten. No model grades its own work.</p></div>
+            <figure class="frame"><a class="shot clip" href="/assets/sod-signup/debate.jpg" target="_blank" rel="noopener" title="Opens the full screenshot in a new tab"><img src="/assets/sod-signup/debate.jpg" width="1600" height="1175" loading="lazy" decoding="async" alt="The first turn of the planning tree, showing competing drafts and the critiques against them."></a></figure>
+          </div>
+          <div class="step">
+            <div class="step-head"><div class="step-title"><p class="num">04</p><h3>You try the running app</h3></div><p class="desc">A live preview on your VM. You accept it only when it works.</p></div>
+            <figure class="frame"><a class="shot clip" href="/assets/sod-signup/preview.jpg" target="_blank" rel="noopener" title="Opens the full screenshot in a new tab"><img src="/assets/sod-signup/preview.jpg" width="1600" height="1291" loading="lazy" decoding="async" alt="A running app in preview: the dashboard of an app called Palimpsest."></a></figure>
+          </div>
+          <div class="step">
+            <div class="step-head"><div class="step-title"><p class="num">05</p><h3>Research on your data</h3></div><p class="desc">Ask a question. It runs the analysis and shows the evidence.</p></div>
+            <figure class="frame"><a class="shot clip" href="/assets/sod-signup/research.jpg" target="_blank" rel="noopener" title="Opens the full screenshot in a new tab"><img src="/assets/sod-signup/research.jpg" width="1600" height="1403" loading="lazy" decoding="async" alt="The research page, where you type the question a research expedition should answer."></a></figure>
+          </div>
+          <div class="step">
+            <div class="step-head"><div class="step-title"><p class="num">06</p><h3>Save your cast. Reuse it.</h3></div><p class="desc">Name a research cast and use it again in your next Expedition or Goal. The same models run, even if the defaults change later.</p></div>
+            <figure class="frame"><a class="shot clip" href="/assets/sod-signup/saved-cast.jpg" target="_blank" rel="noopener" title="Opens the full screenshot in a new tab"><img src="/assets/sod-signup/saved-cast.jpg" width="1600" height="1264" loading="lazy" decoding="async" alt="The Model cast step of a Research Expedition, with Saved casts, Name this cast, and a Save as new cast button above the list of research roles."></a></figure>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="block wrap" id="start" aria-labelledby="startTitle">
+      <h2 id="startTitle">Ready, or not yet?</h2>
+      <div class="ways">
+        <div class="way primary">
+          <h3>Launch my VM</h3>
+          <p><span data-offer-price>$999</span> a month. Ready in about 30 minutes.</p>
+          <a class="button" href="#launchForm">Launch my VM</a>
+        </div>
+        <div class="way">
+          <h3>Book a demo</h3>
+          <p>Watch a real build, start to finish, with the founder.</p>
+          <a class="ghost" href="mailto:mike@sneferu.ai?subject=Book%20a%20demo%3A%20Sneferu%20Software%20On%20Demand">Book a demo</a>
+        </div>
+        <div class="way">
+          <h3>Request information</h3>
+          <p>Questions about data, security, or your use case. Goes to the founder, not a mailing list.</p>
+          <a class="ghost" href="mailto:mike@sneferu.ai?subject=Request%20information%3A%20Sneferu%20Software%20On%20Demand">Request information</a>
+        </div>
+      </div>
+      <p class="smallprint">Live beta. No promised finish time. You run the finished app yourself. Model usage is billed separately.</p>
+    </section>
+    <noscript><p class="wrap">JavaScript is needed to check the current offer and open secure checkout. No payment has been started.</p></noscript>
+  </main>
+  <footer>Software On Demand · © 2026 Sneferu<a href="/terms/">Terms &amp; Conditions</a><a href="/privacy/">Privacy Policy</a><a href="mailto:mike@sneferu.ai">Contact us</a></footer>
+  <script>
+    // The only deployment setting. This backend stays out of the buyer's address bar.
+    const STORE_ORIGIN = "https://sod.sneferu.ai";
+    (() => {
+      "use strict";
+      const API = STORE_ORIGIN + "/api/sod/node-offer";
+      const ATTEMPT = "sneferu.node-purchase." + STORE_ORIGIN;
+      const $ = id => document.getElementById(id);
+      const money = cents => (cents / 100).toLocaleString("en-US", {style:"currency",currency:"USD",minimumFractionDigits:cents % 100 ? 2 : 0});
+      const nonce = () => crypto.randomUUID();
+      let offer = null, busy = false, attempt = null, resumeSaved = false;
+      try { attempt = JSON.parse(sessionStorage.getItem(ATTEMPT) || "null"); } catch (_) {}
+      if (attempt && typeof attempt.name === "string" && typeof attempt.email === "string" && typeof attempt.key === "string") {
+        $("name").value = attempt.name; $("email").value = attempt.email;
+        $("promotion").value = typeof attempt.promotion_code === "string" ? attempt.promotion_code : "";
+      } else { attempt = null; }
+      const left = new URLSearchParams(location.search).get("left") === "1";
+      function message(text, error = false) { $("launchMsg").textContent = text; $("launchMsg").classList.toggle("error", error); }
+      function safeUrl(value, host) {
+        try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password && (!host || u.hostname === host) ? u.href : ""; } catch (_) { return ""; }
+      }
+      async function request(method, url, body, headers = {}) {
+        const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 20000);
+        try {
+          const res = await fetch(url, {method,mode:"cors",credentials:"omit",cache:"no-store",referrerPolicy:"no-referrer",redirect:"error",signal:controller.signal,
+            headers:{Accept:"application/json",...(body === undefined ? {} : {"Content-Type":"application/json"}),...headers},body:body === undefined ? undefined : JSON.stringify(body)});
+          let data = null; try { data = await res.json(); } catch (_) {}
+          return {status:res.status,data};
+        } finally { clearTimeout(timer); }
+      }
+      function savedBuyerMatches() {
+        return resumeSaved && attempt && attempt.name === $("name").value.trim().replace(/\s+/g, " ")
+          && attempt.email === $("email").value.trim().toLowerCase()
+          && (attempt.promotion_code || "") === $("promotion").value.trim().toUpperCase();
+      }
+      function updateAvailability() {
+        $("launchBtn").disabled = busy || (!offer && !savedBuyerMatches());
+        if (offer && !busy) $("launchBtn").textContent = $("promotion").value.trim() ? "Continue to Stripe" : "Launch my VM, " + money(offer.monthly_cents) + "/month";
+      }
+      $("name").addEventListener("input", updateAvailability);
+      $("email").addEventListener("input", updateAvailability);
+      $("promotion").addEventListener("input", updateAvailability);
+      function closed(text, allowSavedRetry = false) {
+        offer = null; $("launchBtn").disabled = true; $("launchBtn").textContent = "Checkout temporarily unavailable";
+        // Checkout availability must never erase the displayed pricing.
+        resumeSaved = allowSavedRetry && !!attempt;
+        $("retryOffer").hidden = false; message(text, true);
+        if (resumeSaved) {
+          $("launchBtn").textContent = "Resume saved checkout";
+          message("Checkout could not be loaded. You can retry your saved checkout with its original name and email; the service will confirm the original order.");
+          updateAvailability();
+        }
+      }
+      async function loadOffer() {
+        $("retryOffer").disabled = true;
+        try {
+          const res = await request("GET", API), o = res.data;
+          if (res.status !== 200 || !o || o.enabled !== true) {
+            closed(res.status === 429 ? "Please try again in a minute." : "Checkout is temporarily unavailable. Please retry.", res.status !== 429); return;
+          }
+          if (!Number.isSafeInteger(o.monthly_cents) || o.monthly_cents <= 0 || !Number.isInteger(o.markup_percent) || o.markup_percent < 0 || o.markup_percent > 100 || !Number.isInteger(o.hold_months) || o.hold_months < 0 || o.hold_months > 36) {
+            closed("The current price could not be confirmed. Please check again shortly."); return;
+          }
+          offer = o; resumeSaved = false; $("priceMonthly").textContent = money(o.monthly_cents); $("monthlyUnit").hidden = false;
+          // The same confirmed price and premium, wherever the page repeats them.
+          document.querySelectorAll("[data-offer-price]").forEach(el => { el.textContent = money(o.monthly_cents); });
+          document.querySelectorAll("[data-offer-markup]").forEach(el => { el.textContent = o.markup_percent + "%"; });
+          $("planName").textContent = typeof o.plan_name === "string" && o.plan_name.trim() ? o.plan_name : "Your private VM";
+          $("offerTerms").textContent = "Model usage at cost + " + o.markup_percent + "%. " + (o.hold_months ? "Monthly rate held " + o.hold_months + " months." : "No introductory rate hold.");
+          // Refresh the published pricing and example together when checkout
+          // confirms its current terms. Outages leave the displayed values intact.
+          const exampleUsage = 10000, premium = o.markup_percent * 100;
+          $("usageExplanation").textContent = "The monthly fee covers your private VM. Measured model usage is billed at provider cost plus " + o.markup_percent + "%. For example, $100 of provider usage becomes " + money(exampleUsage + premium) + " in usage charges.";
+          $("exampleSubscription").textContent = money(o.monthly_cents);
+          $("examplePremiumLabel").textContent = "Usage premium (" + o.markup_percent + "%)";
+          $("examplePremium").textContent = money(premium);
+          $("exampleTotal").textContent = money(o.monthly_cents + exampleUsage + premium);
+          $("usageExample").hidden = false;
+          $("launchBtn").textContent = "Launch my VM, " + money(o.monthly_cents) + "/month";
+          $("launchBtn").disabled = false; $("retryOffer").hidden = true;
+          updateAvailability();
+          const terms = safeUrl(o.terms_url);
+          $("termsLink").hidden = true;
+          if (terms) { $("termsLink").href = terms; $("termsLink").hidden = false; }
+          message(left ? "You left Checkout. Your place is kept; launch when ready." : "");
+        } catch (_) { closed("We couldn’t connect to checkout. Please retry."); }
+        finally { $("retryOffer").disabled = false; }
+      }
+      $("retryOffer").addEventListener("click", loadOffer);
+      $("launchForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        if (busy || (!offer && !savedBuyerMatches()) || !$("launchForm").reportValidity()) return;
+        const name = $("name").value.trim().replace(/\s+/g, " "), email = $("email").value.trim().toLowerCase();
+        const promotion = $("promotion").value.trim().toUpperCase();
+        if (!name) { message("Tell us your name.", true); $("name").focus(); return; }
+        // Persist BEFORE sending. A lost reply, retry or reload must name the
+        // same order, even if the first request already reached Stripe.
+        if (!attempt || attempt.name !== name || attempt.email !== email) attempt = {name,email,promotion_code:promotion,key:"node-order-" + nonce()};
+        try { sessionStorage.setItem(ATTEMPT, JSON.stringify(attempt)); }
+        catch (_) { message("Please allow browser storage for this page, then try again. It keeps retries tied to one checkout.", true); return; }
+        busy = true; $("launchBtn").disabled = true; message("Opening secure checkout…");
+        try {
+          // Editing an invalid code keeps the request key. If an order already
+          // exists the server retains its original discount and refuses a change.
+          const res = await request("POST", API + "/orders", {name,email,website:$("website").value,
+            ...(promotion || attempt.promotion_code ? {promotion_code:promotion} : {})}, {"Idempotency-Key":attempt.key});
+          const checkout = res.data && safeUrl(res.data.checkout_url, "checkout.stripe.com");
+          if (res.status === 201 && checkout) {
+            attempt.order_id = res.data.order_id;
+            attempt.promotion_code = promotion;
+            sessionStorage.setItem(ATTEMPT, JSON.stringify(attempt));
+            message("Taking you to Stripe…"); location.assign(checkout); return;
+          }
+          if (res.status === 201 && res.data && res.data.status === "subscribed") {
+            offer = null; resumeSaved = false; message("This checkout is already complete. Use your VM invitation email to sign in."); return;
+          }
+          if (res.status === 429) message("Please try again in a minute. Your checkout request is saved.", true);
+          else if (res.status === 503 || res.status === 404) closed("Checkout is temporarily unavailable. Your request is saved; please retry.");
+          else if (res.status === 202) message("Your checkout is being checked. Try again shortly; the same request finds it.");
+          else message(res.data && typeof res.data.detail === "string" ? res.data.detail : "Checkout couldn’t be opened. Try again; we’ll reuse the same request.", true);
+        } catch (_) { message("The connection was interrupted. Try again; we’ll reuse the same checkout request.", true); }
+        finally { busy = false; updateAvailability(); }
+      });
+      loadOffer();
+    })();
+  </script>
+</body>
+</html>
