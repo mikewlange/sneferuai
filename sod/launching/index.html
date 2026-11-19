@@ -153,7 +153,7 @@
           $("lvLede").textContent = state === "lapsed" ? "Your subscription has ended. Manage billing below, or contact us for help." : "The latest update is shown below. Contact us if you need help continuing.";
         } else {
           $("lvKicker").textContent = "Payment received"; $("lvTitle").textContent = "Your node is on its way.";
-          $("lvLede").textContent = "Payment received — building your node. This usually takes 20–30 minutes. We’ll email your invitation when it is ready.";
+          $("lvLede").textContent = "Allow about an hour for setup. We’ll email your invitation when your node is ready.";
         }
         const list = $("lvSteps"); list.replaceChildren();
         order.steps.forEach((title, index) => {
