@@ -467,23 +467,3 @@ def test_closed_offer_restores_saved_promotion_and_refuses_edited_terms(page):
     page.locator("#launchBtn").click()
     expect(page.locator("#launchMsg")).to_contain_text("being checked")
     assert state["posts"][0].post_data_json["promotion_code"] == "LIFETIME"
-
-
-@pytest.mark.parametrize("width", [320, 680, 768, 1440])
-def test_signup_draft_comparison_fits_and_links_to_sources(page, width):
-    serve(page)
-    page.set_viewport_size({"width": width, "height": 900})
-    page.goto(SITE + "/sod/signup-new/#compare")
-    table = page.locator("#compare").get_by_role("table")
-    expect(table.get_by_role("columnheader")).to_have_text(
-        ["Product", "Example assignment", "What you can review"]
-    )
-    expect(table.get_by_role("rowheader")).to_have_count(6)
-    no_overflow(page)
-    for row in table.get_by_role("row").all()[1:]:
-        cells = row.get_by_role("cell")
-        expect(cells).to_have_count(2)
-        expect(row.get_by_role("link").first).to_be_visible()
-        for cell in [row.get_by_role("rowheader"), *cells.all()]:
-            box = cell.bounding_box()
-            assert box and 0 <= box["x"] < box["x"] + box["width"] <= width, box

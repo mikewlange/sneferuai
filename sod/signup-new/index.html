@@ -71,21 +71,18 @@
     .bill { margin:0; border:1px solid var(--line-soft); border-radius:8px; background:var(--surface); padding:8px 24px; } .bill div { display:flex; justify-content:space-between; gap:20px; padding:14px 0; border-bottom:1px solid var(--line-soft); }
     .bill div:last-child { border-bottom:0; } .bill dt { min-width:0; color:var(--soft); } .bill dd { margin:0; white-space:nowrap; font-variant-numeric:tabular-nums; } .bill .bill-total { font-weight:600; } .bill .bill-total dt { color:var(--text); }
 
-    /* Product comparison */
-    .comparison { width:100%; margin-top:30px; border-collapse:separate; border-spacing:0; table-layout:fixed; text-align:left; }
-    .comparison th,.comparison td { padding:20px; vertical-align:top; text-align:left; border-bottom:1px solid var(--line-soft); }
-    .comparison thead th,.comparison-label { color:var(--muted); font:600 13px/1.4 var(--sans); }
-    .comparison thead th { padding-block:10px; border-bottom-color:var(--line); }
-    .comparison thead th:first-child { width:24%; }
-    .comparison thead th:nth-child(2) { width:35%; }
-    .comparison tbody th { font:500 23px/1.15 var(--serif); }
-    .comparison td { color:var(--soft); }
-    .comparison .featured { background:#201913; }
-    .comparison .featured th { color:var(--brand); box-shadow:inset 3px 0 var(--brand); }
-    .comparison-sources { display:flex; flex-wrap:wrap; gap:2px 14px; margin-top:7px; font:400 13px/1.5 var(--sans); }
-    .comparison-sources a { text-underline-offset:3px; }
-    .comparison-label { display:none; }
-    .comparison-note { margin:14px 0 0; color:var(--muted); font-size:13px; }
+    /* How it compares */
+    .matrix-wrap { overflow-x:auto; border:1px solid var(--line-soft); border-radius:8px; -webkit-overflow-scrolling:touch; }
+    .matrix { width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; font-size:14.5px; line-height:1.4; text-align:left; }
+    .matrix th,.matrix td { padding:14px 16px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+    .matrix tbody tr:last-child th,.matrix tbody tr:last-child td { border-bottom:0; }
+    .matrix thead th { color:var(--muted); font-weight:600; font-size:13px; letter-spacing:.04em; vertical-align:bottom; }
+    .matrix tbody th,.matrix thead th:first-child { position:sticky; left:0; z-index:1; background:var(--canvas); color:var(--muted); font-weight:500; width:13%; }
+    .matrix td { color:#c9c1b4; }
+    .matrix .us { background:var(--surface-2); color:var(--text); font-weight:600; border-left:1px solid #5a4636; border-right:1px solid #5a4636; width:17%; }
+    .matrix thead .us { color:var(--brand); font-size:17px; letter-spacing:0; border-top:3px solid var(--brand); }
+    .sr { position:absolute; left:-9999px; }
+    .swipe { display:none; font-size:12px; color:var(--muted); margin:10px 0 0; }
 
     /* See it work */
     .steps { display:flex; flex-direction:column; gap:76px; margin-top:52px; }
@@ -120,18 +117,7 @@
       .usage-example { grid-template-columns:minmax(0,1fr); } .bill { padding:4px 18px; }
       .steps { gap:44px; margin-top:32px; } .step-head { grid-template-columns:minmax(0,1fr); margin-bottom:16px; } .step-title { gap:12px; }
       .step .num { font-size:26px; } .step h3 { font-size:21px; } .step .desc { font-size:16px; }
-      footer { padding:20px 18px; }
-    }
-    @media(max-width:680px) {
-      .comparison,.comparison tbody,.comparison tbody tr,.comparison tbody th,.comparison td { display:block; }
-      .comparison { margin-top:22px; border-top:1px solid var(--line); }
-      .comparison thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
-      .comparison tbody tr { padding:18px 16px; border-bottom:1px solid var(--line-soft); }
-      .comparison tbody th,.comparison td { padding:0; border:0; }
-      .comparison .featured { box-shadow:inset 3px 0 var(--brand); }
-      .comparison .featured th { box-shadow:none; }
-      .comparison td { margin-top:14px; }
-      .comparison-label { display:block; margin-bottom:3px; }
+      .swipe { display:block; } footer { padding:20px 18px; }
     }
     @media(max-width:420px) { .hero { padding-top:18px; gap:16px; } h1,.tagline { font-size:27px; } .card { padding:14px; } .terms { margin-bottom:8px; } .policy-links { margin:4px 0; } .field { margin-bottom:10px; } #launchBtn { margin-top:10px; } }
   </style>
@@ -226,67 +212,27 @@
     </div>
 
     <section class="block wrap" id="compare" aria-labelledby="compareTitle">
-      <h2 id="compareTitle">Compare the workflows</h2>
-      <table class="comparison" role="table" aria-labelledby="compareTitle">
-        <thead role="rowgroup">
-          <tr role="row">
-            <th scope="col" role="columnheader">Product</th>
-            <th scope="col" role="columnheader">Example assignment</th>
-            <th scope="col" role="columnheader">What you can review</th>
-          </tr>
-        </thead>
-        <tbody role="rowgroup">
-          <tr class="featured" role="row">
-            <th scope="row" role="rowheader" aria-labelledby="compareSneferu">
-              <span id="compareSneferu">Sneferu</span>
-              <span class="comparison-sources"><a href="#see">Build walkthrough</a><a href="/research/rex-c8661466/">Research report</a></span>
-            </th>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">Example assignment</span>Describe the app you need, or investigate a scientific question using your own files or public data.</td>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">What you can review</span>Try the app on your private VM and get its source code at release. Research reports link findings to the evidence.</td>
-          </tr>
-          <tr role="row">
-            <th scope="row" role="rowheader" aria-labelledby="compareBlitzy">
-              <span id="compareBlitzy">Blitzy</span>
-              <span class="comparison-sources"><a href="https://github.com/blitzy-public-samples/blitzy-stock-trader/pull/2">Sample pull request</a></span>
-            </th>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">Example assignment</span>Replace a legacy COBOL accounting program with a Java service.</td>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">What you can review</span>The replacement code, test results and migration guide in one public pull request.</td>
-          </tr>
-          <tr role="row">
-            <th scope="row" role="rowheader" aria-labelledby="compareOpsera">
-              <span id="compareOpsera">Opsera Forge</span>
-              <span class="comparison-sources"><a href="https://opsera.ai/forge">Forge overview</a></span>
-            </th>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">Example assignment</span>Build a feature that needs architectural review and sign-off.</td>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">What you can review</span>A specification and a record linking each change to its requirement, tests and the person who approved it.</td>
-          </tr>
-          <tr role="row">
-            <th scope="row" role="rowheader" aria-labelledby="compare8090">
-              <span id="compare8090">8090 Software Factory</span>
-              <span class="comparison-sources"><a href="https://docs.8090.ai/modules/work-orders">Work order guide</a></span>
-            </th>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">Example assignment</span>Turn a product requirement into tasks for your engineers and coding agents.</td>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">What you can review</span>Open a work order to see its design, acceptance criteria and any linked pull requests.</td>
-          </tr>
-          <tr role="row">
-            <th scope="row" role="rowheader" aria-labelledby="compareDevin">
-              <span id="compareDevin">Devin</span>
-              <span class="comparison-sources"><a href="https://docs.devin.ai/get-started/devin-intro">Engineering guide</a><a href="https://docs.devin.ai/work-with-devin/data-analyst">Data Analyst guide</a></span>
-            </th>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">Example assignment</span>Delegate a bug fix. On eligible paid plans, ask the Data Analyst about a connected database.</td>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">What you can review</span>Review the fix as a pull request. For a data question, inspect the SQL or ask for a chart.</td>
-          </tr>
-          <tr role="row">
-            <th scope="row" role="rowheader" aria-labelledby="compareFactory">
-              <span id="compareFactory">Factory Droid</span>
-              <span class="comparison-sources"><a href="https://docs.factory.com/missions/running-app">Mission Control guide</a></span>
-            </th>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">Example assignment</span>Give Droid a project with several features and plan the milestones together.</td>
-            <td role="cell"><span class="comparison-label" aria-hidden="true">What you can review</span>Mission Control shows milestone progress, with code changes and validation criteria for each feature.</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="comparison-note">Examples from each company’s published materials, checked <time datetime="2026-11-19">November 19, 2026</time>.</p>
+      <h2 id="compareTitle">How it compares</h2>
+      <p class="sub">From each company’s own website, read November 13, 2026.</p>
+      <div class="matrix-wrap" role="region" aria-labelledby="compareTitle" tabindex="0">
+        <table class="matrix">
+          <thead>
+            <tr><th scope="col"><span class="sr">Question</span></th><th scope="col" class="us">Sneferu</th><th scope="col">Blitzy</th><th scope="col">Opsera Forge</th><th scope="col">8090</th><th scope="col">Devin</th><th scope="col">Factory</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Best for</th><td class="us">Anyone with an idea and no engineering department</td><td>Enterprises with large existing codebases</td><td>Enterprise IT that needs sign-offs</td><td>Enterprises with engineering teams</td><td>Engineering teams</td><td>Engineering teams</td></tr>
+            <tr><th scope="row">Where it runs</th><td class="us">Your own private VM, from day one</td><td>Their platform</td><td>Your cloud, by arrangement</td><td>Not stated</td><td>Shared. Private on Enterprise</td><td>Shared. Private on Enterprise</td></tr>
+            <tr><th scope="row">Price of private</th><td class="us"><span data-offer-price>$999</span> a month</td><td>$500,000 a year tier</td><td>Demo call</td><td>Not stated</td><td>“Let’s talk”</td><td>Contact sales</td></tr>
+            <tr><th scope="row">How you start</th><td class="us">Pay online</td><td>Pilot</td><td>Assessment call</td><td>Talk to us</td><td>Self-serve for shared, sales for private</td><td>Self-serve for shared, sales for private</td></tr>
+            <tr><th scope="row">Starts from</th><td class="us">One plain request</td><td>Your codebase</td><td>An idea and your codebase</td><td>Written requirements</td><td>A ticket</td><td>Your codebase</td></tr>
+            <tr><th scope="row">Who checks the work</th><td class="us">Rival AI labs, then you accept</td><td>Its agents, then your engineers</td><td>Your engineers approve every merge</td><td>Your engineers sign off</td><td>Not stated</td><td>“Humans on judgment”</td></tr>
+            <tr><th scope="row">You end up with</th><td class="us">A running app and the source</td><td>Code, 80%+ done</td><td>A change set</td><td>Pull requests</td><td>A pull request</td><td>Pull requests</td></tr>
+            <tr><th scope="row">Research on your data</th><td class="us">Yes</td><td>Not on site</td><td>Not on site</td><td>Not on site</td><td>Not on site</td><td>Not on site</td></tr>
+            <tr><th scope="row">Choose your models</th><td class="us">Yes, seat by seat</td><td>Not stated</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="swipe">Swipe sideways to see all six.</p>
     </section>
 
     <div class="band">

@@ -1,6 +1,6 @@
 # Research behind the SOD signup comparison
 
-Reviewed November 19, 2026 for the [signup draft](../sod/signup-new/index.html).
+Research notes from November 19, 2026. The alternate signup comparison is saved in commit `e7c2f4a`.
 
 ## How the companies show what their products do
 
@@ -10,7 +10,7 @@ Reviewed November 19, 2026 for the [signup draft](../sod/signup-new/index.html).
 - **Cognition** describes different jobs for Devin and its Data Analyst. An engineer can review a bug fix as a pull request. An analyst can ask about a connected database and inspect the SQL or a chart. The Data Analyst guide excludes free and trial plans. [Devin overview](https://docs.devin.ai/get-started/devin-intro) · [Data Analyst](https://docs.devin.ai/work-with-devin/data-analyst)
 - **Factory** recommends comparing agents on a familiar task with a clear acceptance decision. Its own Missions guide shows what a reviewer can inspect as a larger project progresses, down to a feature’s commits and validation criteria. [Factory’s comparison guide](https://factory.com/articles/best-coding-agent-for-your-team) · [Mission Control](https://docs.factory.com/missions/running-app)
 
-## Why the signup page uses assignments and results
+## Rationale for the alternate comparison
 
 Each product gets the same two questions and a source the buyer can open. For Sneferu, readers can see a private-VM build in the walkthrough and inspect the findings and underlying evidence in a published scientific investigation. [Build walkthrough](../sod/signup-new/index.html#see) · [Published Research Expedition](https://sneferu.ai/research/rex-c8661466/)
 
